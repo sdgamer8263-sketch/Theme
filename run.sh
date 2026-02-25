@@ -23,7 +23,8 @@ show_menu() {
     echo "2) Blueprint 2"
     echo "3) Fix Blueprint"
     echo "4) Theme + Extension"
-    echo "5) Exit"
+    echo "5) Uninstall Extension "
+    echo "6) Exit"
     echo "--------------------------------------------------"
     echo -n "Enter your choice [1-5]: "
 }
@@ -62,6 +63,11 @@ while true; do
             pause
             ;;
         5)
+        echo "Uninstall Extension..."
+            bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/uninstallblueprint.sh)
+            pause
+            ;;
+        6)
             echo "Exiting... Good Luck!"
             exit 0
             ;;
