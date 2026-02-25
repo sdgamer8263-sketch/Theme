@@ -14,6 +14,7 @@ echo "        BLUEPRINT EXTENSION MANAGER v1.0       "
 echo "-------------------------------------------------------"
 
 # Navigate to Pterodactyl directory
+blueprint -upgrade
 cd /var/www/pterodactyl || { echo "Error: Directory /var/www/pterodactyl not found!"; exit 1; }
 
 # Check if extensions folder exists
