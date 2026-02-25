@@ -1,46 +1,76 @@
 #!/bin/bash
 
-# Pterodactyl directory-te jaoa
-cd /var/www/pterodactyl || { echo "Directory not found!"; exit 1; }
+# Clear screen for better look
+clear
 
-# Blueprint extensions folder ache kina check kora
+# SD GAMER Banner
+echo "-------------------------------------------------------"
+echo "  ____  ____   ____    _    __  __ _____ ____  "
+echo " / ___||  _ \ / ___|  / \  |  \/  | ____|  _ \ "
+echo " \___ \| | | | |  _  / _ \ | |\/| |  _| | |_) |"
+echo "  ___) | |_| | |_| |/ ___ \| |  | | |___|  _ < "
+echo " |____/|____/ \____/_/   \_\_|  |_|_____|_| \_\\"
+echo "        BLUEPRINT EXTENSION MANAGER v1.0       "
+echo "-------------------------------------------------------"
+
+# Navigate to Pterodactyl directory
+cd /var/www/pterodactyl || { echo "Error: Directory /var/www/pterodactyl not found!"; exit 1; }
+
+# Check if extensions folder exists
 if [ ! -d "extensions" ]; then
-    echo "Blueprint extensions folder paua jayni. Blueprint ki install kora ache?"
-    exit 1
-fi
-
-echo "------------------------------------------"
-echo "   Pterodactyl Blueprint Manager"
-echo "------------------------------------------"
-echo "Installed Extensions:"
-
-# Extension-er list dekhano
-ls -1 extensions/
-
-echo "------------------------------------------"
-echo "Konta delete korte chan? Extension-er name-ta likhun (othoba 'all' likhun):"
-read -r EXT_NAME
-
-if [ "$EXT_NAME" == "all" ]; then
-    echo "Sob Blueprint files remove kora hochche..."
-    rm -rf blueprint .blueprint extensions
-else
-    if [ -d "extensions/$EXT_NAME" ]; then
-        echo "Removing $EXT_NAME..."
-        rm -rf "extensions/$EXT_NAME"
-    else
-        echo "Error: $EXT_NAME namer kono extension paua jayni!"
+    echo "Blueprint extensions folder not found. Is Blueprint installed?"
+    echo "Checking for core files..."
+    if [ ! -d "blueprint" ]; then
+        echo "No Blueprint installation detected."
         exit 1
     fi
 fi
 
-# Cache clear kora logic
-echo "Clearing Pterodactyl cache..."
+echo "Installed Extensions:"
+echo "------------------------------------------"
+
+# Create an array of extension names
+mapfile -t EXTENSIONS < <(ls -1 extensions/ 2>/dev/null)
+
+# Display extensions with numbers
+if [ ${#EXTENSIONS[@]} -eq 0 ]; then
+    echo "No individual extensions found."
+else
+    for i in "${!EXTENSIONS[@]}"; do
+        echo "$((i+1)). ${EXTENSIONS[$i]}"
+    done
+fi
+
+# Add a "Remove All" option
+ALL_OPTION=$(( ${#EXTENSIONS[@]} + 1 ))
+echo "$ALL_OPTION. REMOVE ALL BLUEPRINT FILES (COMPLETE UNINSTALL)"
+echo "------------------------------------------"
+echo -n "Enter the NUMBER you want to delete: "
+read -r CHOICE
+
+# Validation and Deletion
+if [[ "$CHOICE" -eq "$ALL_OPTION" ]]; then
+    echo "!!!"
+    echo "Removing all Blueprint files, extensions, and framework..."
+    rm -rf blueprint .blueprint extensions
+elif [[ "$CHOICE" -gt 0 && "$CHOICE" -le "${#EXTENSIONS[@]}" ]]; then
+    TARGET=${EXTENSIONS[$((CHOICE-1))]}
+    echo "Removing extension: $TARGET..."
+    rm -rf "extensions/$TARGET"
+else
+    echo "Invalid choice. Exiting script."
+    exit 1
+fi
+
+# Cleanup and Permissions
+echo "------------------------------------------"
+echo "Step 2: Clearing Pterodactyl cache..."
 php artisan view:clear
 php artisan cache:clear
 
-# Permissions fix kora
-echo "Fixing permissions..."
+echo "Step 3: Fixing file permissions..."
 chown -R www-data:www-data /var/www/pterodactyl/*
 
-echo "DONE! Successfully processed $EXT_NAME."
+echo "------------------------------------------"
+echo "SUCCESS: Operation completed by SD GAMER."
+echo "------------------------------------------"
