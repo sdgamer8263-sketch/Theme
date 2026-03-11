@@ -20,14 +20,14 @@ show_menu() {
     show_banner
     echo -e "\e[1;33mSelect an Option:\e[0m"
     echo "1) Blueprint 1"
-    echo "2) Blueprint 2(If Blueprint 1 not work)"
+    echo "2) Blueprint 2 (If Blueprint 1 doesn't work)"
     echo "3) Fix Blueprint"
     echo "4) HyperV"
     echo "5) Theme + Extension"
-    echo "6) Uninstall Extension "
+    echo "6) Uninstall Extension"
     echo "0) Exit"
     echo "--------------------------------------------------"
-    echo -n "Enter your choice [1-5]: "
+    echo -n "Enter your choice [0-6]: "
 }
 
 # Pause function to wait for Enter
@@ -69,17 +69,18 @@ while true; do
             pause
             ;;
         6)
-        echo "Uninstall Extension..."
+            echo "Uninstalling Extension..."
             bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/uninstallblueprint.sh)
             pause
             ;;
-        7)
+        0)
             echo "Exiting... Good Luck!"
             exit 0
             ;;
         *)
-            echo -e "\e[1;31mInvalid input!\e[0m Please select 1 to 6."
+            echo -e "\e[1;31mInvalid input!\e[0m Please select 0 to 6."
             sleep 2
             ;;
     esac
 done
+
