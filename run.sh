@@ -22,7 +22,7 @@ show_menu() {
     echo "1) Blueprint 1"
     echo "2) Blueprint 2(If Blueprint 1 not work)"
     echo "3) Fix Blueprint"
-    echo "4) HyperV
+    echo "4) HyperV"
     echo "5) Theme + Extension"
     echo "6) Uninstall Extension "
     echo "0) Exit"
