@@ -22,9 +22,8 @@ show_menu() {
     echo "1) Blueprint 1"
     echo "2) Blueprint 2 (If Blueprint 1 doesn't work)"
     echo "3) Fix Blueprint"
-    echo "4) HyperV"
-    echo "5) Theme + Extension"
-    echo "6) Uninstall Extension"
+    echo "4) Theme + Extension"
+    echo "5) Uninstall Extension"
     echo "0) Exit"
     echo "--------------------------------------------------"
     echo -n "Enter your choice [0-6]: "
@@ -58,17 +57,12 @@ while true; do
             bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/fix.sh)
             pause
             ;;
-        4)    
-            echo "Starting HYPERV..."
-            bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.sh)
-            pause
-            ;;
-        5)
+        4)
             echo "Starting Theme + Extension..."
             bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/chang.sh)
             pause
             ;;
-        6)
+        5)
             echo "Uninstalling Extension..."
             bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/uninstallblueprint.sh)
             pause
@@ -78,7 +72,7 @@ while true; do
             exit 0
             ;;
         *)
-            echo -e "\e[1;31mInvalid input!\e[0m Please select 0 to 6."
+            echo -e "\e[1;31mInvalid input!\e[0m Please select 0 to 5."
             sleep 2
             ;;
     esac
