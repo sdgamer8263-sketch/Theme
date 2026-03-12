@@ -64,7 +64,7 @@ show_sdgamer_banner() {
     echo "  ___) | |_| | |_| |/ ___ \| |  | | |___|  _ < "
     echo " |____/|____/ \____/_/   \_\_|  |_|_____|_| \_\\"
     echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}               AUTO INSTALLER THEME${NC}"
+    echo -e "${BOLD}${MAGENTA}               AUTO INSTALLER${NC}"
     echo -e "${BLUE}=================================================${NC}"
 }
 
@@ -164,19 +164,19 @@ start_script() {
 submenu_abyss() {
   while true; do
     show_abyss_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Purple Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Amber Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Emerald Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[d]${NC} ${WHITE}Crimson Red Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${WHITE}Exit (Back to Main Menu)${NC}"
-    echo -n -e "\n${BOLD}Select an option: ${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Purple Colour${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Amber Colour${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Emerald Colour${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[d]${NC} ${WHITE}Crimson Red Colour${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
+    echo -n -e "\n${BOLD}Select an option (a-d, or 0 to back): ${NC}"
     read choice
     case "$choice" in
       a|A) THEME_NAME="Abyss Purple"; THEME_URL="$URL_TY/abysspurple.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       b|B) THEME_NAME="Abyss Amber"; THEME_URL="$URL_TY/amberabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       c|C) THEME_NAME="Abyss Emerald"; THEME_URL="$URL_TY/emeraldabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       d|D) THEME_NAME="Abyss Crimson"; THEME_URL="$URL_TY/crimsonabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      x|X) return 1;;
+      0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
@@ -187,13 +187,13 @@ submenu_catppuccin() {
     show_catppuccin_banner
     echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Catppuccindactyl V1${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Catppuccindactyl V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${WHITE}Exit (Back to Main Menu)${NC}"
-    echo -n -e "\n${BOLD}Select an option: ${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
+    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
       a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/2.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      x|X) return 1;;
+      0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
@@ -202,15 +202,15 @@ submenu_catppuccin() {
 submenu_navy() {
   while true; do
     show_navy_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Navy Seals Slice Theme V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Navy Seals Slice Theme V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${WHITE}Exit (Back to Main Menu)${NC}"
-    echo -n -e "\n${BOLD}Select an option: ${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Navy Seals Slice V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Navy Seals Slice V2${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
+    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
       a|A) THEME_NAME="Navy Seals V1"; THEME_URL="$URL_EX/Navy%20seals%20slice.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       b|B) THEME_NAME="Navy Seals V2"; THEME_URL="$URL_EX/navyseals.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      x|X) return 1;;
+      0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
@@ -222,14 +222,14 @@ submenu_nebula() {
     echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Nebula V1${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Nebula V2${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Nebula V3${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${WHITE}Exit (Back to Main Menu)${NC}"
-    echo -n -e "\n${BOLD}Select an option: ${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
+    echo -n -e "\n${BOLD}Select an option (a-c, or 0 to back): ${NC}"
     read choice
     case "$choice" in
       a|A) THEME_NAME="Nebula V1"; THEME_URL="$URL_EX/nebula1.8.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       b|B) THEME_NAME="Nebula V2"; THEME_URL="$URL_EX/nebula2.0.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       c|C) THEME_NAME="Nebula V3"; THEME_URL="$URL_EX/nebula.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      x|X) return 1;;
+      0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
@@ -240,13 +240,13 @@ submenu_xlpanel() {
     show_xlpanel_banner
     echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Xlpanel V1${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Xlpanel V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${WHITE}Exit (Back to Main Menu)${NC}"
-    echo -n -e "\n${BOLD}Select an option: ${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
+    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
       a|A) THEME_NAME="Xlpanel V1"; THEME_URL="$URL_EX/xlpaneltheme.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       b|B) THEME_NAME="Xlpanel V2"; THEME_URL="$URL_EX/xlpaneltheme2.0.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      x|X) return 1;;
+      0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
@@ -260,31 +260,31 @@ install_theme() {
   while true; do
     show_sdgamer_banner
     echo " "
-    echo -e " ${BRIGHT_WHITE}${BOLD}[01]${NC} ${WHITE}ABYSS Themes (Blueprint)${NC} ${CYAN}[Submenu]${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[02]${NC} ${WHITE}Arix Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[03]${NC} ${WHITE}Billing Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[04]${NC} ${WHITE}Catppuccindactyl (Blueprint)${NC} ${CYAN}[Submenu]${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[05]${NC} ${WHITE}Darkenate Theme (Blueprint)${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[06]${NC} ${WHITE}Elysium Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[07]${NC} ${WHITE}Enigma Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[08]${NC} ${WHITE}Euphoriatheme (Blueprint)${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[09]${NC} ${WHITE}Frostcore Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[10]${NC} ${WHITE}Hyper V1 Theme${NC} ${YELLOW}[Script]${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[11]${NC} ${WHITE}IceMinecraft Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[12]${NC} ${WHITE}Lemem Theme (Blueprint)${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[13]${NC} ${WHITE}Lu Theme (Blueprint)${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[14]${NC} ${WHITE}Navy Themes (Blueprint)${NC} ${CYAN}[Submenu]${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[15]${NC} ${WHITE}Nebula Themes (Blueprint)${NC} ${CYAN}[Submenu]${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[16]${NC} ${WHITE}Nightcore Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[17]${NC} ${WHITE}Noobe Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[18]${NC} ${WHITE}Nook Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[19]${NC} ${WHITE}Refresh Theme (Blueprint)${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[20]${NC} ${WHITE}Stellar Theme${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel Themes (Blueprint)${NC} ${CYAN}[Submenu]${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[01]${NC} ${WHITE}ABYSS${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[02]${NC} ${WHITE}Arix${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[03]${NC} ${WHITE}Billing${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[04]${NC} ${WHITE}Catppuccindactyl${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[05]${NC} ${WHITE}Darkenate${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[06]${NC} ${WHITE}Elysium${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[07]${NC} ${WHITE}Enigma${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[08]${NC} ${WHITE}Euphoria${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[09]${NC} ${WHITE}Frostcore${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[10]${NC} ${WHITE}Hyper V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[11]${NC} ${WHITE}IceMinecraft${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[12]${NC} ${WHITE}Lemem${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[13]${NC} ${WHITE}Lu${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[14]${NC} ${WHITE}Navy${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[15]${NC} ${WHITE}Nebula${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[16]${NC} ${WHITE}Nightcore${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[17]${NC} ${WHITE}Noobe${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[18]${NC} ${WHITE}Nook${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[19]${NC} ${WHITE}Refresh${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[20]${NC} ${WHITE}Stellar${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel${NC}"
     echo " "
-    echo -e " ${BRIGHT_WHITE}${BOLD}[x]${NC} ${RED}Exit / Cancel Installation${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC}  ${RED}Exit${NC}"
     echo " "
-    echo -n -e "${BOLD}Enter your choice (1-21 or x)${NC}${BOLD}: ${NC}"
+    echo -n -e "${BOLD}Enter your choice (0-21)${NC}${BOLD}: ${NC}"
     read SELECT_THEME
 
     case "$SELECT_THEME" in
@@ -295,12 +295,12 @@ install_theme() {
       5|05) THEME_NAME="Darkenate"; THEME_URL="$URL_EX/darkenate.blueprint"; INSTALL_TYPE="blueprint"; break ;;
       6|06) THEME_NAME="Elysium"; THEME_URL="$URL_FG/elysium.zip"; INSTALL_TYPE="standard"; break ;;
       7|07) THEME_NAME="Enigma"; THEME_URL="$URL_FG/enigma.zip"; INSTALL_TYPE="standard"; break ;;
-      8|08) THEME_NAME="Euphoriatheme"; THEME_URL="$URL_EX/euphoriatheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
+      8|08) THEME_NAME="Euphoria"; THEME_URL="$URL_EX/euphoriatheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
       9|09) THEME_NAME="Frostcore"; THEME_URL="$URL_FG/frostcore.zip"; INSTALL_TYPE="standard"; break ;;
       10) THEME_NAME="Hyper V1"; THEME_URL="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.sh"; INSTALL_TYPE="script"; break ;;
       11) THEME_NAME="IceMinecraft"; THEME_URL="$URL_FG/iceMinecraft.zip"; INSTALL_TYPE="standard"; break ;;
       12) THEME_NAME="Lemem"; THEME_URL="$URL_EX/lememtheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-      13) THEME_NAME="Lu Theme"; THEME_URL="$URL_EX/lutheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
+      13) THEME_NAME="Lu"; THEME_URL="$URL_EX/lutheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
       14) submenu_navy && break ;;
       15) submenu_nebula && break ;;
       16) THEME_NAME="Nightcore"; THEME_URL="$URL_FG/nightcore.zip"; INSTALL_TYPE="standard"; break ;;
@@ -309,13 +309,13 @@ install_theme() {
       19) THEME_NAME="Refresh"; THEME_URL="$URL_EX/refreshtheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
       20) THEME_NAME="Stellar"; THEME_URL="$URL_FG/stellar.zip"; INSTALL_TYPE="standard"; break ;;
       21) submenu_xlpanel && break ;;
-      x|X) echo -e "\n${BOLD}Installation cancelled.${NC}"; return;;
+      0|00) echo -e "\n${BOLD}Installation cancelled.${NC}"; return;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
   done
 
   echo " "
-  echo -n -e "${BOLD}You selected the theme '$THEME_NAME'. Continue? (y/n): ${NC}"
+  echo -n -e "${BOLD}You selected '$THEME_NAME'. Continue? (y/n): ${NC}"
   read confirmation
   if [[ "$confirmation" != [yY]* ]]; then echo -e "${BOLD}Installation cancelled.${NC}"; return; fi
 
@@ -332,7 +332,7 @@ install_theme() {
   trap 'rm -rf -- "$TEMP_DIR"' EXIT
   cd "$TEMP_DIR"
 
-  print_info "Starting installation for theme $THEME_NAME..."
+  print_info "Starting installation for $THEME_NAME..."
 
   if [ "$THEME_NAME" == "Enigma" ]; then
     echo -n -e "${BOLD}Enter WhatsApp link (starting with https://): ${NC}"; read LINK_ADMIN
@@ -340,7 +340,7 @@ install_theme() {
     echo -n -e "${BOLD}Enter WhatsApp group link (starting with https://): ${NC}"; read LINK_GROUP
   fi
 
-  print_info "[1/4] Downloading theme files..."
+  print_info "[1/4] Downloading files..."
   wget -q "$THEME_URL"
   DOWNLOADED_FILE=$(ls -1 | head -n 1)
 
@@ -360,10 +360,10 @@ install_theme() {
     sudo chown -R www-data:www-data /var/www/pterodactyl
     sudo rm -f "/var/www/pterodactyl/$DOWNLOADED_FILE"
     
-    print_success "Theme '$THEME_NAME' installed successfully."
+    print_success "'$THEME_NAME' installed successfully."
 
   elif [ "$INSTALL_TYPE" == "standard" ]; then
-    print_info "[2/4] Extracting theme files..."
+    print_info "[2/4] Extracting files..."
     unzip -oq "$DOWNLOADED_FILE" || true
 
     if [ "$THEME_NAME" == "Enigma" ]; then
@@ -411,7 +411,7 @@ install_theme() {
     php artisan view:clear
     php artisan optimize:clear
     
-    print_success "Theme '$THEME_NAME' installed successfully."
+    print_success "'$THEME_NAME' installed successfully."
   fi
 
   echo " "
