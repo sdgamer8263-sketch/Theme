@@ -157,21 +157,6 @@ start_script() {
   sleep 1
 }
 
-check_token() {
-  show_sdgamer_banner
-  echo -e "                                                       "
-  echo -n -e "${BOLD}${YELLOW}ENTER ACCESS TOKEN: ${NC}"
-  read -r USER_TOKEN
-
-  if [ "$USER_TOKEN" = "rendzzoffc" ] || [ "$USER_TOKEN" = "sdgamer" ]; then 
-    echo -e "${BOLD}${GREEN}ACCESS GRANTED${NC}"
-  else
-    echo -e "${BOLD}${RED}The token you entered is incorrect.${NC}"
-    exit 1
-  fi
-  sleep 1
-}
-
 # ==========================================
 # SUBMENU FUNCTIONS
 # ==========================================
@@ -438,7 +423,9 @@ install_theme() {
   return 0
 }
 
+# ==========================================
 # START EXECUTION
+# ==========================================
 start_script
-check_token
 install_theme
+
