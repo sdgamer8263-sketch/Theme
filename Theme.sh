@@ -164,10 +164,10 @@ start_script() {
 submenu_abyss() {
   while true; do
     show_abyss_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Purple Colour${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Amber Colour${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Emerald Colour${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[d]${NC} ${WHITE}Crimson Red Colour${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Purple Colour Version${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Amber Colour Version${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Emerald Colour Version${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[d]${NC} ${WHITE}Crimson Red Colour Version${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
     echo -n -e "\n${BOLD}Select an option (a-d, or 0 to back): ${NC}"
     read choice
@@ -185,8 +185,8 @@ submenu_abyss() {
 submenu_catppuccin() {
   while true; do
     show_catppuccin_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Catppuccindactyl V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Catppuccindactyl V2${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Catppuccindactyl Theme V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Catppuccindactyl Theme V2${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
@@ -202,8 +202,8 @@ submenu_catppuccin() {
 submenu_navy() {
   while true; do
     show_navy_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Navy Seals Slice V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Navy Seals Slice V2${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Navy Seals Slice Theme V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Navy Seals Slice Theme V2${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
@@ -219,9 +219,9 @@ submenu_navy() {
 submenu_nebula() {
   while true; do
     show_nebula_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Nebula V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Nebula V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Nebula V3${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Nebula Theme V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Nebula Theme V2${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Nebula Theme V3${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
     echo -n -e "\n${BOLD}Select an option (a-c, or 0 to back): ${NC}"
     read choice
@@ -238,8 +238,8 @@ submenu_nebula() {
 submenu_xlpanel() {
   while true; do
     show_xlpanel_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Xlpanel V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Xlpanel V2${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Xlpanel Theme V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Xlpanel Theme V2${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
@@ -260,27 +260,27 @@ install_theme() {
   while true; do
     show_sdgamer_banner
     echo " "
-    echo -e " ${BRIGHT_WHITE}${BOLD}[01]${NC} ${WHITE}ABYSS${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[02]${NC} ${WHITE}Arix${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[03]${NC} ${WHITE}Billing${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[04]${NC} ${WHITE}Catppuccindactyl${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[05]${NC} ${WHITE}Darkenate${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[06]${NC} ${WHITE}Elysium${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[07]${NC} ${WHITE}Enigma${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[08]${NC} ${WHITE}Euphoria${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[09]${NC} ${WHITE}Frostcore${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[10]${NC} ${WHITE}Hyper V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[11]${NC} ${WHITE}IceMinecraft${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[12]${NC} ${WHITE}Lemem${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[13]${NC} ${WHITE}Lu${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[14]${NC} ${WHITE}Navy${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[15]${NC} ${WHITE}Nebula${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[16]${NC} ${WHITE}Nightcore${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[17]${NC} ${WHITE}Noobe${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[18]${NC} ${WHITE}Nook${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[19]${NC} ${WHITE}Refresh${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[20]${NC} ${WHITE}Stellar${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[01]${NC} ${WHITE}ABYSS Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[02]${NC} ${WHITE}Arix Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[03]${NC} ${WHITE}Billing Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[04]${NC} ${WHITE}Catppuccindactyl Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[05]${NC} ${WHITE}Darkenate Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[06]${NC} ${WHITE}Elysium Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[07]${NC} ${WHITE}Enigma Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[08]${NC} ${WHITE}Euphoria Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[09]${NC} ${WHITE}Frostcore Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[10]${NC} ${WHITE}Hyper Theme V1${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[11]${NC} ${WHITE}IceMinecraft Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[12]${NC} ${WHITE}Lemem Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[13]${NC} ${WHITE}Lu Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[14]${NC} ${WHITE}Navy Seals Slice Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[15]${NC} ${WHITE}Nebula Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[16]${NC} ${WHITE}Nightcore Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[17]${NC} ${WHITE}Noobe Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[18]${NC} ${WHITE}Nook Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[19]${NC} ${WHITE}Refresh Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[20]${NC} ${WHITE}Stellar Theme${NC}"
+    echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel Theme${NC}"
     echo " "
     echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC}  ${RED}Exit${NC}"
     echo " "
