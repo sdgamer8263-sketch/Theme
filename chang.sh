@@ -104,7 +104,7 @@ while true; do
         # ===== BLUEPRINT EXTENSIONS (UPDATED) =====
         4)
             echo -e "${GREEN}🛠 Running Blueprint Extensions installer...${RESET}"
-            bash <(curl -fsSL https://raw.githubusercontent.com/sdgamer8263-sketch/pterodactyl_extention/main/install.sh)
+            bash <(curl -fsSL https://raw.githubusercontent.com/sdgamer8263-sketch/pterodactyl_extention1/main/install.sh)
             echo -e "${GREEN}✅ Extension process finished!${RESET}"
             sleep 2
         ;;
