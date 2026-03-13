@@ -106,11 +106,11 @@ show_catppuccin_banner() {
 show_navy_banner() {
     clear
     echo -e "${BRIGHT_CYAN}"
-    echo "      _   _    _    __  __  __   __"
-    echo "     | \ | |  / \   \ \/ /  \ \ / /"
-    echo "     |  \| | / _ \   \  /    \ V / "
-    echo "     | |\  |/ ___ \  /  \     | |  "
-    echo "     |_| \_/_/   \_\/_/\_\    |_|  "
+    echo "  _   _    _    __     __ __   __ "
+    echo " | \ | |  / \   \ \   / / \ \ / / "
+    echo " |  \| | / _ \   \ \ / /   \ V /  "
+    echo " | |\  |/ ___ \   \ V /     | |   "
+    echo " |_| \_/_/   \_\   \_/      |_|   "
     echo -e "${NC}"
     echo -e "${BOLD}${MAGENTA}               POWERED BY - SDGAMER${NC}"
     echo -e "${BLUE}=================================================${NC}"
@@ -279,19 +279,23 @@ install_theme() {
   # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
   IGNORE_ALPHABETS=(
       "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-      "catppuccindactyl" "navysealsslice" "navyseals" "nebula"
-      "xlpaneltheme" "arix" "billing" "darkenate" "elysium"
-      "enigma" "euphoriatheme" "frostcore" "iceminecraft"
-      "lememtheme" "lutheme" "nightcore" "noobe" "nook"
-      "refreshtheme" "stellar"
+      "arix" "billing" "catppuccindactyl" "darkenate" "elysium"
+      "enigma" "euphoria" "euphoriatheme" "frostcore" "hyper" "hyperv"
+      "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
+      "navyseals" "navysealsslice" "nebula" "nightcore" "noobe" "nook"
+      "refresh" "refreshtheme" "stellar" "xlpanel" "xlpaneltheme"
   )
 
-  # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
+  # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট, হিডেন ক্যারেক্টার সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
   is_ignored() {
       local file="$1"
+      # হিডেন ক্যারেক্টার রিমুভ
+      file="${file//$'\r'/}"
       local base="${file%.*}"
-      # শুধুমাত্র a-z অক্ষরগুলো রেখে বাকি সব মুছে ফেলবে এবং ছোট হাতের করবে
-      local pure_alpha=$(echo "$base" | sed 's/[^a-zA-Z]//g' | tr '[:upper:]' '[:lower:]')
+      # Pure Bash দিয়ে শুধুমাত্র a-z এবং A-Z অক্ষরগুলো রেখে বাকি সব মুছে ফেলা
+      local pure_alpha="${base//[^a-zA-Z]/}"
+      # ছোট হাতের অক্ষরে রূপান্তর
+      pure_alpha=$(echo "$pure_alpha" | tr '[:upper:]' '[:lower:]')
       
       for ignored in "${IGNORE_ALPHABETS[@]}"; do
           if [[ "$ignored" == "$pure_alpha" ]]; then
@@ -307,11 +311,10 @@ install_theme() {
   DYNAMIC_COUNT=0
 
   if echo "$TREE_DATA" | grep -q '"tree":'; then
-      # গিটহাব থেকে ফাইলগুলো নিয়ে A-Z অনুযায়ী সাজানো হচ্ছে
+      # গিটহাব থেকে ফাইলগুলো নিয়ে "sort -f" কমান্ড দিয়ে A-Z অনুযায়ী সাজানো হচ্ছে
       while IFS= read -r raw_path; do
           [ -z "$raw_path" ] && continue
           
-          # \r বা কোনো হিডেন ক্যারেক্টার থাকলে রিমুভ করে দেওয়া হচ্ছে
           file_path=$(echo "$raw_path" | tr -d '\r')
           filename="${file_path##*/}"
           
@@ -324,7 +327,12 @@ install_theme() {
               first_char="${base_name_clean:0:1}"
               rest_str="${base_name_clean:1}"
               first_char_upper=$(echo "$first_char" | tr '[:lower:]' '[:upper:]')
-              display_name="${first_char_upper}${rest_str} Theme"
+              
+              # যদি ফাইলের নামে Theme লেখা না থাকে, তবে যোগ করবে (দেখতে সুন্দর লাগবে)
+              display_name="${first_char_upper}${rest_str}"
+              if [[ ! "${display_name,,}" == *"theme"* ]]; then
+                  display_name="${display_name} Theme"
+              fi
               
               DYNAMIC_NAMES[$DYNAMIC_COUNT]="$display_name"
               DYNAMIC_URLS[$DYNAMIC_COUNT]="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/${file_path// /%20}"
