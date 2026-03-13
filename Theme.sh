@@ -200,8 +200,8 @@ submenu_catppuccin() {
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
-      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyli.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactylk.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/2.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
@@ -277,24 +277,21 @@ install_theme() {
   fi
 
   # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
-  # এখানে নতুন নামগুলো (catppuccindactyli ও catppuccindactylk) অ্যাড করা হয়েছে।
   IGNORE_ALPHABETS=(
       "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-      "catppuccindactyli" "catppuccindactylk" "navyseals" "navysealsslice" "nebula"
-      "xlpanel" "xlpaneltheme" "arix" "billing" "darkenate"
-      "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
-      "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
-      "nightcore" "noobe" "nook" "refresh" "refreshtheme" "stellar"
-      "hyper" "hyperv"
+      "catppuccindactyl" "navysealsslice" "navyseals" "nebula"
+      "xlpaneltheme" "arix" "billing" "darkenate" "elysium"
+      "enigma" "euphoriatheme" "frostcore" "iceminecraft"
+      "lememtheme" "lutheme" "nightcore" "noobe" "nook"
+      "refreshtheme" "stellar"
   )
 
   # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
   is_ignored() {
       local file="$1"
       local base="${file%.*}"
-      base="${base//%20/}"
-      # শুধুমাত্র a-z অক্ষরগুলো রেখে বাকি সব মুছে ফেলবে
-      local pure_alpha=$(echo "$base" | tr -cd 'a-zA-Z' | tr '[:upper:]' '[:lower:]')
+      # শুধুমাত্র a-z অক্ষরগুলো রেখে বাকি সব মুছে ফেলবে এবং ছোট হাতের করবে
+      local pure_alpha=$(echo "$base" | sed 's/[^a-zA-Z]//g' | tr '[:upper:]' '[:lower:]')
       
       for ignored in "${IGNORE_ALPHABETS[@]}"; do
           if [[ "$ignored" == "$pure_alpha" ]]; then
@@ -310,11 +307,12 @@ install_theme() {
   DYNAMIC_COUNT=0
 
   if echo "$TREE_DATA" | grep -q '"tree":'; then
-      # গিটহাব থেকে ফাইলগুলো নিয়ে "sort -f" কমান্ড দিয়ে A-Z অনুযায়ী সাজানো হচ্ছে
-      mapfile -t FILE_LIST < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path' | sort -f)
-
-      for file_path in "${FILE_LIST[@]}"; do
-          [ -z "$file_path" ] && continue
+      # গিটহাব থেকে ফাইলগুলো নিয়ে A-Z অনুযায়ী সাজানো হচ্ছে
+      while IFS= read -r raw_path; do
+          [ -z "$raw_path" ] && continue
+          
+          # \r বা কোনো হিডেন ক্যারেক্টার থাকলে রিমুভ করে দেওয়া হচ্ছে
+          file_path=$(echo "$raw_path" | tr -d '\r')
           filename="${file_path##*/}"
           
           # Alphabet Matching এর মাধ্যমে চেক
@@ -338,7 +336,7 @@ install_theme() {
               fi
               ((DYNAMIC_COUNT++))
           fi
-      done
+      done < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path' | awk -F'/' '{print $NF "|" $0}' | sort -f | cut -d'|' -f2)
   fi
 
   while true; do
