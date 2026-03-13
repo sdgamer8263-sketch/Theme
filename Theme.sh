@@ -276,31 +276,48 @@ install_theme() {
       TREE_DATA=$(curl -s -H "User-Agent: AutoInstaller" "$API_URL")
   fi
 
-  # এই লিস্টে মেনুর ফাইলগুলোর নাম (স্পেস ও ডট ছাড়া) দেওয়া হলো
+  # 100% Exact Match List: তোমার গিটহাবের ফাইলের নামগুলো হুবহু এখানে দেওয়া হলো
   IGNORE_LIST=(
-      "abysspurpleblueprint" "amberabyssblueprint" "emeraldabyssblueprint" "crimsonabyssblueprint"
-      "1catppuccindactylblueprint" "2catppuccindactylblueprint"
-      "navysealssliceblueprint" "navysealsblueprint"
-      "nebula18blueprint" "nebula20blueprint" "nebulablueprint"
-      "xlpanelthemeblueprint" "xlpaneltheme20blueprint" "xlpanelhemeblueprint"
-      "arixzip" "billingzip" "darkenateblueprint" "elysiumzip" "enigmazip" 
-      "euphoriathemeblueprint" "frostcorezip" "iceminecraftzip"
-      "lememthemeblueprint" "luthemeblueprint" "nightcorezip" "noobezip"
-      "nookzip" "refreshthemeblueprint" "stellarzip"
+      "abysspurple.blueprint"
+      "amberabyss.blueprint"
+      "crimsonabyss.blueprint"
+      "emeraldabyss.blueprint"
+      "1.catppuccindactyl.blueprint"
+      "2.catppuccindactyl.blueprint"
+      "Navy seals slice.blueprint"
+      "Navy%20seals%20slice.blueprint"
+      "navyseals.blueprint"
+      "nebula.blueprint"
+      "nebula1.8.blueprint"
+      "nebula2.0.blueprint"
+      "xlpaneltheme.blueprint"
+      "xlpaneltheme2.0.blueprint"
+      "arix.zip"
+      "billing.zip"
+      "darkenate.blueprint"
+      "elysium.zip"
+      "enigma.zip"
+      "euphoriatheme.blueprint"
+      "frostcore.zip"
+      "iceMinecraft.zip"
+      "lememtheme.blueprint"
+      "lutheme.blueprint"
+      "nightcore.zip"
+      "nightcore-1.zip"
+      "noobe.zip"
+      "nook.zip"
+      "nook-1.zip"
+      "refreshtheme.blueprint"
+      "stellar.zip"
   )
 
-  # Smart Scanner: স্পেস, ডট এবং ছোট-বড় হাতের অক্ষরের ভেজাল দূর করবে
+  # কোনো কাটাকুটি ছাড়াই সরাসরি ফাইলের নাম চেক করা হচ্ছে
   is_ignored() {
-      local file="${1,,}"  # সবকিছু ছোট হাতের অক্ষরে রূপান্তর
-      file="${file// /}"   # সব স্পেস মুছে ফেলা
-      file="${file//./}"   # সব ডট মুছে ফেলা
-      file="${file//%20/}" # URL এনকোডিং মুছে ফেলা
-      file="${file//_/}"   # আন্ডারস্কোর মুছে ফেলা
-      
+      local file="$1"
       for ignored in "${IGNORE_LIST[@]}"; do
           if [[ "$ignored" == "$file" ]]; then return 0; fi # মিলে গেলে ইগনোর করবে
       done
-      return 1 # না মিললে লিস্টে অ্যাড করবে
+      return 1 # না মিললে নতুন থিম হিসেবে অ্যাড করবে
   }
 
   declare -a DYNAMIC_NAMES
@@ -309,7 +326,6 @@ install_theme() {
   DYNAMIC_COUNT=0
 
   if echo "$TREE_DATA" | grep -q '"tree":'; then
-      # <<< ব্যবহার করে সেফলি ডেটা রিড করা হচ্ছে যাতে EOF Error না আসে
       while IFS= read -r file_path; do
           [ -z "$file_path" ] && continue
           filename="${file_path##*/}"
@@ -332,7 +348,7 @@ install_theme() {
               fi
               ((DYNAMIC_COUNT++))
           fi
-      done <<< "$(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path')"
+      done < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path')
   fi
 
   while true; do
@@ -435,12 +451,6 @@ install_theme() {
 
   print_info "Starting installation for $THEME_NAME..."
 
-  if [[ "$THEME_NAME" == *"Enigma"* ]]; then
-    echo -n -e "${BOLD}Enter WhatsApp link (starting with https://): ${NC}"; read LINK_ADMIN
-    echo -n -e "${BOLD}Enter WhatsApp channel link (starting with https://): ${NC}"; read LINK_CHANNEL
-    echo -n -e "${BOLD}Enter WhatsApp group link (starting with https://): ${NC}"; read LINK_GROUP
-  fi
-
   print_info "[1/4] Downloading files..."
   wget -q "$THEME_URL"
   DOWNLOADED_FILE=$(ls -1 | head -n 1)
@@ -466,13 +476,6 @@ install_theme() {
   elif [ "$INSTALL_TYPE" == "standard" ]; then
     print_info "[2/4] Extracting files..."
     unzip -oq "$DOWNLOADED_FILE" || true
-
-    if [[ "$THEME_NAME" == *"Enigma"* ]]; then
-      print_info "Configuring Enigma variables..."
-      sed -i "s|LINK_ADMIN|$LINK_ADMIN|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-      sed -i "s|LINK_CHANNEL|$LINK_CHANNEL|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-      sed -i "s|LINK_GROUP|$LINK_GROUP|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-    fi
 
     print_info "[3/4] Copying files to Pterodactyl..."
     sudo cp -rfT pterodactyl /var/www/pterodactyl
