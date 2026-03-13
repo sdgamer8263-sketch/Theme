@@ -201,7 +201,7 @@ submenu_catppuccin() {
     read choice
     case "$choice" in
       a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyli.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactylk.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
@@ -284,7 +284,7 @@ install_theme() {
       "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
       "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
       "nightcore" "noobe" "nook" "refresh" "refreshtheme" "stellar"
-      "hyper" "hyperv"
+      "hyper" "hyperv" "catppuccindactylk"
   )
 
   # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
