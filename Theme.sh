@@ -276,48 +276,31 @@ install_theme() {
       TREE_DATA=$(curl -s -H "User-Agent: AutoInstaller" "$API_URL")
   fi
 
-  # 100% Exact Match List: তোমার গিটহাবের ফাইলের নামগুলো হুবহু এখানে দেওয়া হলো
-  IGNORE_LIST=(
-      "abysspurple.blueprint"
-      "amberabyss.blueprint"
-      "crimsonabyss.blueprint"
-      "emeraldabyss.blueprint"
-      "1.catppuccindactyl.blueprint"
-      "2.catppuccindactyl.blueprint"
-      "Navy seals slice.blueprint"
-      "Navy%20seals%20slice.blueprint"
-      "navyseals.blueprint"
-      "nebula.blueprint"
-      "nebula1.8.blueprint"
-      "nebula2.0.blueprint"
-      "xlpaneltheme.blueprint"
-      "xlpaneltheme2.0.blueprint"
-      "arix.zip"
-      "billing.zip"
-      "darkenate.blueprint"
-      "elysium.zip"
-      "enigma.zip"
-      "euphoriatheme.blueprint"
-      "frostcore.zip"
-      "iceMinecraft.zip"
-      "lememtheme.blueprint"
-      "lutheme.blueprint"
-      "nightcore.zip"
-      "nightcore-1.zip"
-      "noobe.zip"
-      "nook.zip"
-      "nook-1.zip"
-      "refreshtheme.blueprint"
-      "stellar.zip"
+  # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
+  IGNORE_ALPHABETS=(
+      "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
+      "catppuccindactyl" "navyseals" "navysealsslice" "nebula"
+      "xlpanel" "xlpaneltheme" "arix" "billing" "darkenate"
+      "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
+      "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
+      "nightcore" "noobe" "nook" "refresh" "refreshtheme" "stellar"
+      "hyper" "hyperv"
   )
 
-  # কোনো কাটাকুটি ছাড়াই সরাসরি ফাইলের নাম চেক করা হচ্ছে
+  # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
   is_ignored() {
       local file="$1"
-      for ignored in "${IGNORE_LIST[@]}"; do
-          if [[ "$ignored" == "$file" ]]; then return 0; fi # মিলে গেলে ইগনোর করবে
+      local base="${file%.*}"
+      base="${base//%20/}"
+      # শুধুমাত্র a-z অক্ষরগুলো রেখে বাকি সব মুছে ফেলবে
+      local pure_alpha=$(echo "$base" | tr -cd 'a-zA-Z' | tr '[:upper:]' '[:lower:]')
+      
+      for ignored in "${IGNORE_ALPHABETS[@]}"; do
+          if [[ "$ignored" == "$pure_alpha" ]]; then
+              return 0 # নাম মিলে গেছে, তাই ইগনোর করবে
+          fi
       done
-      return 1 # না মিললে নতুন থিম হিসেবে অ্যাড করবে
+      return 1 # নতুন নাম, তাই লিস্টে অ্যাড করবে
   }
 
   declare -a DYNAMIC_NAMES
@@ -326,13 +309,19 @@ install_theme() {
   DYNAMIC_COUNT=0
 
   if echo "$TREE_DATA" | grep -q '"tree":'; then
-      while IFS= read -r file_path; do
+      # গিটহাব থেকে ফাইলগুলো নিয়ে "sort -f" কমান্ড দিয়ে A-Z অনুযায়ী সাজানো হচ্ছে
+      mapfile -t FILE_LIST < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path' | sort -f)
+
+      for file_path in "${FILE_LIST[@]}"; do
           [ -z "$file_path" ] && continue
           filename="${file_path##*/}"
           
+          # Alphabet Matching এর মাধ্যমে চেক
           if ! is_ignored "$filename"; then
               base_name="${filename%.*}"
               base_name_clean="${base_name//%20/ }"
+              
+              # নামের প্রথম অক্ষর বড় হাতের করা হচ্ছে
               first_char="${base_name_clean:0:1}"
               rest_str="${base_name_clean:1}"
               first_char_upper=$(echo "$first_char" | tr '[:lower:]' '[:upper:]')
@@ -348,7 +337,7 @@ install_theme() {
               fi
               ((DYNAMIC_COUNT++))
           fi
-      done < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path')
+      done
   fi
 
   while true; do
@@ -380,6 +369,7 @@ install_theme() {
     if [ $DYNAMIC_COUNT -gt 0 ]; then
         echo " "
         echo -e "${CYAN}=== Extra Themes ===${NC}"
+        # নতুন থিমগুলো Alphabetical Order এ সাজানো থাকবে
         for i in "${!DYNAMIC_NAMES[@]}"; do
             printf " ${BRIGHT_WHITE}${BOLD}[%02d]${NC} ${WHITE}%s${NC}\n" "$((i+22))" "${DYNAMIC_NAMES[$i]}"
         done
@@ -473,7 +463,7 @@ install_theme() {
     
     print_success "'$THEME_NAME' installed successfully."
 
-  elif [ "$INSTALL_TYPE" == "standard" ]; then
+elif [ "$INSTALL_TYPE" == "standard" ]; then
     print_info "[2/4] Extracting files..."
     unzip -oq "$DOWNLOADED_FILE" || true
 
