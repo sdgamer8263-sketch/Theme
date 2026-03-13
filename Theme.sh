@@ -276,25 +276,31 @@ install_theme() {
       TREE_DATA=$(curl -s -H "User-Agent: AutoInstaller" "$API_URL")
   fi
 
-  # এই লিস্টের ভেতরের কোনো ফাইলের নাম ডায়নামিক মেনুতে দেখাবে না।
+  # এই লিস্টে মেনুর ফাইলগুলোর নাম (স্পেস ও ডট ছাড়া) দেওয়া হলো
   IGNORE_LIST=(
-      "abysspurple.blueprint" "amberabyss.blueprint" "emeraldabyss.blueprint" "crimsonabyss.blueprint"
-      "1.catppuccindactyl.blueprint" "2.catppuccindactyl.blueprint"
-      "Navy seals slice.blueprint" "navyseals.blueprint" "Navy%20seals%20slice.blueprint"
-      "nebula1.8.blueprint" "nebula2.0.blueprint" "nebula.blueprint"
-      "xlpaneltheme.blueprint" "xlpaneltheme2.0.blueprint"
-      "arix.zip" "billing.zip" "darkenate.blueprint" "elysium.zip" "enigma.zip" 
-      "euphoriatheme.blueprint" "frostcore.zip" "hyperv1.sh" "iceMinecraft.zip"
-      "lememtheme.blueprint" "lutheme.blueprint" "nightcore.zip" "noobe.zip"
-      "nook.zip" "refreshtheme.blueprint" "stellar.zip"
+      "abysspurpleblueprint" "amberabyssblueprint" "emeraldabyssblueprint" "crimsonabyssblueprint"
+      "1catppuccindactylblueprint" "2catppuccindactylblueprint"
+      "navysealssliceblueprint" "navysealsblueprint"
+      "nebula18blueprint" "nebula20blueprint" "nebulablueprint"
+      "xlpanelthemeblueprint" "xlpaneltheme20blueprint" "xlpanelhemeblueprint"
+      "arixzip" "billingzip" "darkenateblueprint" "elysiumzip" "enigmazip" 
+      "euphoriathemeblueprint" "frostcorezip" "iceminecraftzip"
+      "lememthemeblueprint" "luthemeblueprint" "nightcorezip" "noobezip"
+      "nookzip" "refreshthemeblueprint" "stellarzip"
   )
 
+  # Smart Scanner: স্পেস, ডট এবং ছোট-বড় হাতের অক্ষরের ভেজাল দূর করবে
   is_ignored() {
-      local file="$1"
+      local file="${1,,}"  # সবকিছু ছোট হাতের অক্ষরে রূপান্তর
+      file="${file// /}"   # সব স্পেস মুছে ফেলা
+      file="${file//./}"   # সব ডট মুছে ফেলা
+      file="${file//%20/}" # URL এনকোডিং মুছে ফেলা
+      file="${file//_/}"   # আন্ডারস্কোর মুছে ফেলা
+      
       for ignored in "${IGNORE_LIST[@]}"; do
-          if [[ "$ignored" == "$file" ]]; then return 0; fi
+          if [[ "$ignored" == "$file" ]]; then return 0; fi # মিলে গেলে ইগনোর করবে
       done
-      return 1
+      return 1 # না মিললে লিস্টে অ্যাড করবে
   }
 
   declare -a DYNAMIC_NAMES
@@ -303,7 +309,7 @@ install_theme() {
   DYNAMIC_COUNT=0
 
   if echo "$TREE_DATA" | grep -q '"tree":'; then
-      # Process substitution ব্যবহার করা হয়েছে যাতে কোনো কোটেশন এরর না আসে
+      # <<< ব্যবহার করে সেফলি ডেটা রিড করা হচ্ছে যাতে EOF Error না আসে
       while IFS= read -r file_path; do
           [ -z "$file_path" ] && continue
           filename="${file_path##*/}"
@@ -326,7 +332,7 @@ install_theme() {
               fi
               ((DYNAMIC_COUNT++))
           fi
-      done < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path')
+      done <<< "$(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path')"
   fi
 
   while true; do
