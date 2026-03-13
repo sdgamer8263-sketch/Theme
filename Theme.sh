@@ -266,7 +266,7 @@ submenu_xlpanel() {
 # ==========================================
 
 install_theme() {
-  print_info "Checking for extra themes dynamically..."
+  print_info "Checking for new themes dynamically..."
 
   API_URL="https://api.github.com/repos/sdgamer8263-sketch/Theme/git/trees/main?recursive=1"
   
@@ -276,15 +276,17 @@ install_theme() {
       TREE_DATA=$(curl -s -H "User-Agent: AutoInstaller" "$API_URL")
   fi
 
-  # যেসব ফাইলগুলো অলরেডি তোমার হার্ডকোড মেনুতে আছে, সেগুলো ইগনোর করার লিস্ট
+  # এই লিস্টের ভেতরের কোনো ফাইলের নাম ডায়নামিক মেনুতে দেখাবে না। (কারণ এগুলো মেইন মেনু বা সাবমেনুতে আগে থেকেই আছে)
   IGNORE_LIST=(
       "abysspurple.blueprint" "amberabyss.blueprint" "emeraldabyss.blueprint" "crimsonabyss.blueprint"
-      "arix.zip" "billing.zip" "1.catppuccindactyl.blueprint" "2.catppuccindactyl.blueprint"
-      "darkenate.blueprint" "elysium.zip" "enigma.zip" "euphoriatheme.blueprint" "frostcore.zip"
-      "hyperv1.sh" "iceMinecraft.zip" "lememtheme.blueprint" "lutheme.blueprint" "Navy seals slice.blueprint"
-      "navyseals.blueprint" "nebula1.8.blueprint" "nebula2.0.blueprint" "nebula.blueprint"
-      "nightcore.zip" "noobe.zip" "nook.zip" "refreshtheme.blueprint" "stellar.zip"
+      "1.catppuccindactyl.blueprint" "2.catppuccindactyl.blueprint"
+      "Navy seals slice.blueprint" "navyseals.blueprint" "Navy%20seals%20slice.blueprint"
+      "nebula1.8.blueprint" "nebula2.0.blueprint" "nebula.blueprint"
       "xlpaneltheme.blueprint" "xlpaneltheme2.0.blueprint"
+      "arix.zip" "billing.zip" "darkenate.blueprint" "elysium.zip" "enigma.zip" 
+      "euphoriatheme.blueprint" "frostcore.zip" "hyperv1.sh" "iceMinecraft.zip"
+      "lememtheme.blueprint" "lutheme.blueprint" "nightcore.zip" "noobe.zip"
+      "nook.zip" "refreshtheme.blueprint" "stellar.zip"
   )
 
   is_ignored() {
@@ -306,6 +308,7 @@ install_theme() {
           [ -z "$file_path" ] && continue
           filename="${file_path##*/}"
           
+          # যদি ফাইলটি IGNORE_LIST এ না থাকে, শুধুমাত্র তখনই সেটি অ্যাড হবে
           if ! is_ignored "$filename"; then
               base_name="${filename%.*}"
               base_name_clean="${base_name//%20/ }"
@@ -353,7 +356,7 @@ install_theme() {
     echo -e " ${BRIGHT_WHITE}${BOLD}[20]${NC} ${WHITE}Stellar Theme${NC}"
     echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel Theme${NC}"
     
-    # নতুন থিম থাকলে সেগুলো ২১ এর পর থেকে দেখাবে
+    # নতুন থিম থাকলে সেগুলো ২১ এর পর থেকে দেখাবে (শুধুমাত্র যেগুলো IGNORE_LIST এ নেই)
     if [ $DYNAMIC_COUNT -gt 0 ]; then
         echo " "
         echo -e "${CYAN}=== Extra Themes ===${NC}"
@@ -399,7 +402,7 @@ install_theme() {
           21) submenu_xlpanel && break ;;
         esac
     elif [[ "$SELECT_THEME" -ge 22 && "$SELECT_THEME" -le "$TOTAL_OPTIONS" ]]; then
-        # ডায়নামিক মেনু লজিক
+        # ডায়নামিক মেনু লজিক (শুধুমাত্র নতুন থিমগুলোর জন্য)
         INDEX=$((SELECT_THEME - 22))
         THEME_NAME="${DYNAMIC_NAMES[$INDEX]}"
         THEME_URL="${DYNAMIC_URLS[$INDEX]}"
@@ -460,68 +463,4 @@ install_theme() {
     print_success "'$THEME_NAME' installed successfully."
 
   elif [ "$INSTALL_TYPE" == "standard" ]; then
-    print_info "[2/4] Extracting files..."
-    unzip -oq "$DOWNLOADED_FILE" || true
-
-    if [[ "$THEME_NAME" == *"Enigma"* ]]; then
-      print_info "Configuring Enigma variables..."
-      sed -i "s|LINK_ADMIN|$LINK_ADMIN|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-      sed -i "s|LINK_CHANNEL|$LINK_CHANNEL|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-      sed -i "s|LINK_GROUP|$LINK_GROUP|g" pterodactyl/resources/scripts/components/dashboard/DashboardContainer.tsx 2>/dev/null || true
-    fi
-
-    print_info "[3/4] Copying files to Pterodactyl..."
-    sudo cp -rfT pterodactyl /var/www/pterodactyl
-    cd /var/www/pterodactyl
-
-    print_info "Checking Node.js version..."
-    CURRENT_NODE_VER=$(node -v 2>/dev/null | cut -d'.' -f1 | sed 's/v//')
-    if [[ "$CURRENT_NODE_VER" != "22" ]]; then
-      print_warning "Installing Node.js v22..."
-      sudo apt-get remove -y nodejs npm > /dev/null 2>&1 || true
-      sudo apt-get purge -y nodejs > /dev/null 2>&1 || true
-      sudo rm -f /usr/bin/node /usr/local/bin/node /usr/bin/npm /usr/local/bin/npm /etc/apt/sources.list.d/nodesource.list
-      sudo mkdir -p /etc/apt/keyrings
-      curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor --yes | sudo tee /etc/apt/keyrings/nodesource.gpg > /dev/null
-      echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list > /dev/null
-      sudo apt-get update -y > /dev/null 2>&1
-      sudo apt-get install -y nodejs > /dev/null 2>&1
-    fi
-
-    hash -r
-    sudo npm i -g yarn > /dev/null 2>&1
-    
-    print_info "Installing build dependencies..."
-    yarn add cross-env react-feather > /dev/null 2>&1
-    yarn install > /dev/null 2>&1
-
-    if [[ "$THEME_NAME" == *"Billing"* ]]; then
-      print_info "Running Billing installation..."
-      php artisan billing:install stable
-    fi
-
-    print_info "[4/4] Building panel assets..."
-    print_warning "Build process is running. DO NOT close the terminal until it finishes!"
-    export NODE_OPTIONS=--openssl-legacy-provider
-    php artisan migrate --force
-    yarn build:production
-    php artisan view:clear
-    php artisan optimize:clear
-    
-    print_success "'$THEME_NAME' installed successfully."
-  fi
-
-  echo " "
-  log_success "[=================================================]"
-  log_success "[       INSTALLATION COMPLETED SUCCESSFULLY       ]"
-  log_success "[=================================================]"
-  echo " "
-  sleep 3
-  return 0
-}
-
-# ==========================================
-# START EXECUTION
-# ==========================================
-start_script
-install_theme
+    print_info "[2/4] E
