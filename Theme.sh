@@ -200,8 +200,8 @@ submenu_catppuccin() {
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
-      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/2.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyli.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactylo.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
@@ -279,7 +279,7 @@ install_theme() {
   # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
   IGNORE_ALPHABETS=(
       "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-      "catppuccindactyl" "navyseals" "navysealsslice" "nebula"
+      "catppuccindactyl" "catppuccindactyli" "catppuccindactylo" "navyseals" "navysealsslice" "nebula"
       "xlpanel" "xlpaneltheme" "arix" "billing" "darkenate"
       "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
       "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
@@ -368,7 +368,7 @@ install_theme() {
     
     if [ $DYNAMIC_COUNT -gt 0 ]; then
         echo " "
-        echo -e "${CYAN}=== Extra Themes ===${NC}"
+        echo -e "${CYAN}${NC}"
         # নতুন থিমগুলো Alphabetical Order এ সাজানো থাকবে
         for i in "${!DYNAMIC_NAMES[@]}"; do
             printf " ${BRIGHT_WHITE}${BOLD}[%02d]${NC} ${WHITE}%s${NC}\n" "$((i+22))" "${DYNAMIC_NAMES[$i]}"
