@@ -260,7 +260,6 @@ submenu_xlpanel() {
     esac
   done
 }
-
 # ==========================================
 # MAIN MENU & DYNAMIC FETCHER
 # ==========================================
@@ -437,8 +436,7 @@ install_theme() {
       bash <(curl -sL "$THEME_URL")
       return 0
   fi
-
-  # -- INSTALLATION ENGINE --
+    # -- INSTALLATION ENGINE --
   set -e
   TEMP_DIR=$(mktemp -d)
   trap 'rm -rf -- "$TEMP_DIR"' EXIT
@@ -473,7 +471,35 @@ install_theme() {
     unzip -oq "$DOWNLOADED_FILE" || true
 
     print_info "[3/4] Copying files to Pterodactyl..."
-    sudo cp -rfT pterodactyl /var/www/pterodactyl
+    
+    # ====================================================================
+    # SMART COPY LOGIC (For dynamically added and standard zip themes)
+    # ====================================================================
+    
+    # ১. প্রথমে খুঁজবে আনজিপ করা ফাইলের ভেতর 'pterodactyl' নামের কোনো ফোল্ডার আছে কিনা
+    PTERO_DIR=$(find . -maxdepth 3 -type d -iname "pterodactyl" | head -n 1)
+
+    if [ -n "$PTERO_DIR" ]; then
+        sudo cp -r "$PTERO_DIR"/* /var/www/pterodactyl/
+    else
+        # ২. যদি 'pterodactyl' ফোল্ডার না থাকে, তবে সরাসরি resources/public ফোল্ডার খুঁজবে
+        if [ -d "./resources" ] || [ -d "./public" ]; then
+             sudo cp -r ./* /var/www/pterodactyl/
+        else
+            # ৩. অনেক সময় জিপের ভেতর একটাই মেইন ফোল্ডার থাকে (যেমন Ultra_Cheese-main)
+            SINGLE_DIR=$(find . -mindepth 1 -maxdepth 1 -type d | grep -v "$DOWNLOADED_FILE" | head -n 1)
+            
+            if [ -n "$SINGLE_DIR" ] && { [ -d "$SINGLE_DIR/resources" ] || [ -d "$SINGLE_DIR/public" ]; }; then
+                sudo cp -r "$SINGLE_DIR"/* /var/www/pterodactyl/
+            else
+                # ৪. সর্বশেষ উপায়, সরাসরি কারেন্ট ডিরেক্টরি থেকে কপি করবে (zip ফাইলটি বাদে)
+                rm -f "$DOWNLOADED_FILE"
+                sudo cp -r ./* /var/www/pterodactyl/ 2>/dev/null || true
+            fi
+        fi
+    fi
+    # ====================================================================
+
     cd /var/www/pterodactyl
 
     print_info "Checking Node.js version..."
