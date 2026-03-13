@@ -277,14 +277,15 @@ install_theme() {
   fi
 
   # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
+  # এখানে নতুন নামগুলো (catppuccindactyli ও catppuccindactylk) অ্যাড করা হয়েছে।
   IGNORE_ALPHABETS=(
       "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-      "catppuccindactyl" "catppuccindactyli"  "navyseals" "navysealsslice" "nebula"
+      "catppuccindactyli" "catppuccindactylk" "navyseals" "navysealsslice" "nebula"
       "xlpanel" "xlpaneltheme" "arix" "billing" "darkenate"
       "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
       "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
       "nightcore" "noobe" "nook" "refresh" "refreshtheme" "stellar"
-      "hyper" "hyperv" "catppuccindactylk"
+      "hyper" "hyperv"
   )
 
   # ফাংশন: এটি নামের ভেতর থেকে স্পেস, নাম্বার, ডট সব মুছে শুধু ছোট হাতের অক্ষর মেলাবে
@@ -368,7 +369,7 @@ install_theme() {
     
     if [ $DYNAMIC_COUNT -gt 0 ]; then
         echo " "
-        echo -e "${CYAN}${NC}"
+        echo -e "${CYAN}=== Extra Themes ===${NC}"
         # নতুন থিমগুলো Alphabetical Order এ সাজানো থাকবে
         for i in "${!DYNAMIC_NAMES[@]}"; do
             printf " ${BRIGHT_WHITE}${BOLD}[%02d]${NC} ${WHITE}%s${NC}\n" "$((i+22))" "${DYNAMIC_NAMES[$i]}"
@@ -463,7 +464,7 @@ install_theme() {
     
     print_success "'$THEME_NAME' installed successfully."
 
-elif [ "$INSTALL_TYPE" == "standard" ]; then
+  elif [ "$INSTALL_TYPE" == "standard" ]; then
     print_info "[2/4] Extracting files..."
     unzip -oq "$DOWNLOADED_FILE" || true
 
