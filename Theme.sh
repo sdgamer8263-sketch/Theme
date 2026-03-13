@@ -279,7 +279,7 @@ install_theme() {
   # এই লিস্টে মেনুর নামগুলোর শুধুমাত্র "ALPHABET" (অক্ষর) রাখা হয়েছে।
   IGNORE_ALPHABETS=(
       "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-      "catppuccindactyl" "catppuccindactyli" "catppuccindactylo" "navyseals" "navysealsslice" "nebula"
+      "catppuccindactyl" "catppuccindactyli"  "navyseals" "navysealsslice" "nebula"
       "xlpanel" "xlpaneltheme" "arix" "billing" "darkenate"
       "elysium" "enigma" "euphoria" "euphoriatheme" "frostcore"
       "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
