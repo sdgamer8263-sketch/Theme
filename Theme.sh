@@ -374,8 +374,6 @@ install_theme() {
     echo -e " ${BRIGHT_WHITE}${BOLD}[21]${NC} ${WHITE}Xlpanel Theme${NC}"
     
     if [ $DYNAMIC_COUNT -gt 0 ]; then
-        echo " "
-        echo -e "${CYAN}=== Extra Themes ===${NC}"
         # নতুন থিমগুলো Alphabetical Order এ সাজানো থাকবে
         for i in "${!DYNAMIC_NAMES[@]}"; do
             printf " ${BRIGHT_WHITE}${BOLD}[%02d]${NC} ${WHITE}%s${NC}\n" "$((i+22))" "${DYNAMIC_NAMES[$i]}"
