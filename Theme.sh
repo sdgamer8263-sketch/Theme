@@ -201,7 +201,7 @@ submenu_catppuccin() {
     read choice
     case "$choice" in
       a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyli.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
