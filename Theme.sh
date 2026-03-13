@@ -200,8 +200,8 @@ submenu_catppuccin() {
     echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
     read choice
     case "$choice" in
-      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/1.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/2.catppuccindactyl.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyl1.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactyl2.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
       0) return 1;;
       *) print_error "Invalid selection, please try again."; sleep 1;;
     esac
