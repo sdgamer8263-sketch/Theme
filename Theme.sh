@@ -70,7 +70,7 @@ THEMES=(
   "Elysium Theme|zip|${URL_FG}/elysium.zip"
   "Enigma Theme|zip|${URL_FG}/enigma.zip"
   "Frostcore Theme|zip|${URL_FG}/frostcore.zip"
-  "Hyper V2|script|https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.sh"
+  "Hyper V2|script|https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.s"
   "IceMinecraft Theme|zip|${URL_FG}/iceMinecraft.zip"
   "Lu Theme|bp2|${URL_EX}/lutheme.blueprint"
   "Nightcore Theme|zip|${URL_FG}/nightcore.zip"
@@ -79,7 +79,7 @@ THEMES=(
   "Stellar Theme|zip|${URL_FG}/stellar.zip"
   
   # === Arix Theme (Explicit Addition) ===
-  "Arix Theme|script|https://raw.githubusercontent.com/sdgamer8263-sketch/ax/main/install.sh"
+  "Arix Theme|script|https://raw.githubusercontent.com/sdgamer8263-sketch/pterodactyl_extention1/main/arix-install.sh"
 )
 
 # ==========================================
