@@ -218,7 +218,7 @@ while true; do
             ;;
         3)
             echo -e "\n${CYAN}Initializing Email Setup...${NC}"
-            bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/adon/main/email.sh)
+            bash <(curl -sL https://raw.githubusercontent.com/sdgamer8263-sketch/adon/main/email.h)
             pause
             ;;
         4)
