@@ -1,534 +1,210 @@
 #!/bin/bash
 
 # ==========================================
-# GITHUB TOKEN (Secret Scanner Bypass)
+# 🔐 BASIC PROTECTION & SETUP
 # ==========================================
-# গিটহাব যাতে টোকেন ধরতে না পারে তাই টোকেনটিকে দুই ভাগে ভাগ করা হয়েছে।
-T_P1="ghp_"
-T_P2="sX8V7v1XHeC4uxV4sCr1MhBhIORxzY2IGZo5"
+[[ $EUID -ne 0 ]] && echo "Run as root!" && exit 1
 
-GITHUB_TOKEN="${T_P1}${T_P2}"
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
 
-# Reset
-NC='\033[0m'
+if [ -f /etc/needrestart/needrestart.conf ]; then
+  sudo sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+  sudo sed -i "s/\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+fi
 
-# Style
-BOLD='\033[1m'
-DIM='\033[2m'
-UNDERLINE='\033[4m'
-BLINK='\033[5m'
-REVERSE='\033[7m'
-HIDDEN='\033[8m'
+# Ensure required packages
+apt-get update -y >/dev/null 2>&1
+apt-get install -y jq curl wget unzip >/dev/null 2>&1
 
-# Foreground (Text Color Normal)
-BLACK='\033[0;30m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
-MAGENTA='\033[0;35m'
-CYAN='\033[0;36m'
-WHITE='\033[0;37m'
+# ==========================================
+# 🎨 COLORS & STYLES
+# ==========================================
+R="\e[31m"; G="\e[32m"; Y="\e[33m"
+B="\e[34m"; M="\e[35m"; C="\e[36m"
+W="\e[97m"; N="\e[0m"
 
-# Foreground (Text Color Bright/Bold)
-BRIGHT_BLACK='\033[90m'
-BRIGHT_RED='\033[91m'
-BRIGHT_GREEN='\033[92m'
-BRIGHT_YELLOW='\033[93m'
-BRIGHT_BLUE='\033[94m'
-BRIGHT_MAGENTA='\033[95m'
-BRIGHT_CYAN='\033[96m'
-BRIGHT_WHITE='\033[97m'
+BR="\e[1;31m"; BG="\e[1;32m"; BY="\e[1;33m"
+BM="\e[1;35m"; BC="\e[1;36m"; BW="\e[1;97m"
 
-# Background Colors (Normal)
-BG_BLUE='\033[44m'
-BG_GREEN='\033[42m'
-BG_YELLOW='\033[43m'
-BG_RED='\033[41m'
+trap 'echo -e "\n${R}[!] Force exit detected.${N}"; exit 1' SIGINT
 
-# URLs Base
+# ==========================================
+# 🔗 URL CONSTANTS
+# ==========================================
+URL_NOBITA="https://github.com/nobita329/Nobita-Cloud/raw/refs/heads/main/thame/UI"
 URL_FG="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/Fg"
 URL_EX="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/Ex"
-URL_TY="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/Ex/Ty"
-
-# Print Functions
-print_info() { echo -e "\n  ${BG_BLUE}${BRIGHT_WHITE}${BOLD} INFO ${NC} ${BOLD}$1${NC}\n"; }
-print_success() { echo -e "\n  ${BG_GREEN}${BRIGHT_WHITE}${BOLD} SUCCESS ${NC} ${BOLD}$1${NC}\n"; }
-print_warning() { echo -e "\n  ${BG_YELLOW}${BRIGHT_WHITE}${BOLD} WARNING ${NC} ${BOLD}$1${NC}\n"; }
-print_error() { echo -e "\n  ${BG_RED}${BRIGHT_WHITE}${BOLD} ERROR ${NC} ${BOLD}$1${NC}\n"; }
-log_info() { echo -e "${BOLD}${CYAN}$1${NC}"; }
-log_success() { echo -e "${BOLD}${GREEN}$1${NC}"; }
-log_error() { echo -e "${BOLD}${RED}$1${NC}"; }
 
 # ==========================================
-# BANNERS
+# 🧠 THEMES DATABASE (Merged Lists)
+# Format: "Display Name | Type | Payload"
+# Types: bp1 (Script 1 Blueprint), bp2 (Script 2 Blueprint), zip (Script 2 standard), script, submenu
 # ==========================================
-
-show_sdgamer_banner() {
-    clear
-    echo -e "${BRIGHT_CYAN}"
-    echo "  ____  ____   ____    _    __  __ _____ ____  "
-    echo " / ___||  _ \ / ___|  / \  |  \/  | ____|  _ \ "
-    echo " \___ \| | | | |  _  / _ \ | |\/| |  _| | |_) |"
-    echo "  ___) | |_| | |_| |/ ___ \| |  | | |___|  _ < "
-    echo " |____/|____/ \____/_/   \_\_|  |_|_____|_| \_\\"
-    echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}      🌎     THEME INSTALLER (V26.1)  🌐${NC}"
-    echo -e "${BLUE}============================================================${NC}"
-}
-
-show_abyss_banner() {
-    clear
-    echo -e "${BRIGHT_MAGENTA}"
-    echo "      _    ____  __  __ ____  ____  "
-    echo "     / \  | __ ) \ \/ // ___|/ ___| "
-    echo "    / _ \ |  _ \  \  / \___ \\___ \ "
-    echo "   / ___ \| |_) | /  \  ___) |___) |"
-    echo "  /_/   \_\____/ /_/\_\|____/|____/ "
-    echo -e "${NC}"
-    echo -e "${BOLD}${CYAN}               POWERED BY - SDGAMER (V26.1)${NC}"
-    echo -e "${BLUE}======================================================${NC}"
-}
-
-show_catppuccin_banner() {
-    clear
-    echo -e "${BRIGHT_BLUE}"
-    echo "   ____    _  _____ ____  ____  _   _  ____ ____ ___ _   _ "
-    echo "  / ___|  / \|_   _|  _ \|  _ \| | | |/ ___/ ___|_ _| \ | |"
-    echo " | |     / _ \ | | | |_) | |_) | | | | |  | |    | ||  \| |"
-    echo " | |___ / ___ \| | |  __/|  __/| |_| | |__| |___ | || |\  |"
-    echo "  \____/_/   \_\_| |_|   |_|    \___/ \____\____|___|_| \_|"
-    echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}                     POWERED BY - SDGAMER (V26.1)${NC}"
-    echo -e "${CYAN}===============================================================${NC}"
-}
-
-show_navy_banner() {
-    clear
-    echo -e "${BRIGHT_CYAN}"
-    echo "  _   _    _    __     __ __   __ "
-    echo " | \ | |  / \   \ \   / / \ \ / / "
-    echo " |  \| | / _ \   \ \ / /   \ V /  "
-    echo " | |\  |/ ___ \   \ V /     | |   "
-    echo " |_| \_/_/   \_\   \_/      |_|   "
-    echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}               POWERED BY - SDGAMER (V26.1)${NC}"
-    echo -e "${BLUE}=========================================================${NC}"
-}
-
-show_nebula_banner() {
-    clear
-    echo -e "${BRIGHT_YELLOW}"
-    echo "   _   _ _____ ____  _   _ _        _    "
-    echo "  | \ | | ____| __ )| | | | |      / \   "
-    echo "  |  \| |  _| |  _ \| | | | |     / _ \  "
-    echo "  | |\  | |___| |_) | |_| | |___ / ___ \ "
-    echo "  |_| \_|_____|____/ \___/|_____/_/   \_\\"
-    echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}               POWERED BY - SDGAMER (V26.1)${NC}"
-    echo -e "${BLUE}==========================================================${NC}"
-}
-
-show_xlpanel_banner() {
-    clear
-    echo -e "${BRIGHT_GREEN}"
-    echo "   __  ___     ____   _    _   _ _____ _     "
-    echo "   \ \/ / |   |  _ \ / \  | \ | | ____| |    "
-    echo "    \  /| |   | |_) / _ \ |  \| |  _| | |    "
-    echo "    /  \| |___|  __/ ___ \| |\  | |___| |___ "
-    echo "   /_/\_\_____|_| /_/   \_\_| \_|_____|_____|"
-    echo -e "${NC}"
-    echo -e "${BOLD}${MAGENTA}               POWERED BY - SDGAMER (V26.1)${NC}"
-    echo -e "${BLUE}==========================================================${NC}"
-}
+THEMES=(
+  # === Script 1 Themes (Duplicates use these definitions as requested) ===
+  "Euphoria Theme|bp1|euphoriatheme.blueprint"
+  "BetterAdmin|bp1|BetterAdmin.blueprint"
+  "Abyss Purple|bp1|abysspurple.blueprint"
+  "Abyss Amber|bp1|amberabyss.blueprint"
+  "Catppuccindactyl|bp1|catppuccindactyl.blueprint"
+  "Abyss Crimson|bp1|crimsonabyss.blueprint"
+  "Abyss Emerald|bp1|emeraldabyss.blueprint"
+  "NightAdmin|bp1|nightadmin.blueprint"
+  "Refresh Theme|bp1|refreshtheme.blueprint"
+  "Slice|bp1|slice.blueprint"
+  "Darkenate|bp1|darkenate.blueprint"
+  "Recolor|bp1|recolor.blueprint"
+  "BlueTables|bp1|bluetables.blueprint"
+  "UltraDarkAdmin|bp1|ultradarkadmin.blueprint"
+  "Xlpanel Theme|bp1|xlpaneltheme.blueprint"
+  "Lemem Theme|bp1|lememtheme.blueprint"
+  "Slate|bp1|slate.blueprint"
+  "KaelixPrime|bp1|kaelixprime.blueprint"
+  "M3dactyl|bp1|m3dactyl.blueprint"
+  
+  # === Script 2 Unique Themes & Exceptions ===
+  "Nebula Theme|submenu|nebula"
+  "Navy Seals|submenu|navy"
+  "Billing Theme|zip|${URL_FG}/billing.zip"
+  "Elysium Theme|zip|${URL_FG}/elysium.zip"
+  "Enigma Theme|zip|${URL_FG}/enigma.zip"
+  "Frostcore Theme|zip|${URL_FG}/frostcore.zip"
+  "Hyper V1|script|https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.sh"
+  "IceMinecraft Theme|zip|${URL_FG}/iceMinecraft.zip"
+  "Lu Theme|bp2|${URL_EX}/lutheme.blueprint"
+  "Nightcore Theme|zip|${URL_FG}/nightcore.zip"
+  "Noobe Theme|zip|${URL_FG}/noobe.zip"
+  "Nook Theme|zip|${URL_FG}/nook.zip"
+  "Stellar Theme|zip|${URL_FG}/stellar.zip"
+  
+  # === Arix Theme (Explicit Addition) ===
+  "Arix Theme|script|https://raw.githubusercontent.com/sdgamer8263-sketch/ax/main/install.sh"
+)
 
 # ==========================================
-# SYSTEM SETUP & VALIDATION
+# 🔍 HELPERS
 # ==========================================
+get_title() { echo 'ICAgICAg44CCIOKAjCDigJMgTm9iaXRhLmRldiBDT05UUk9MIEhVQiDigJMg44CCICAgICAg' | base64 -d; }
 
-start_script() {
-  show_sdgamer_banner
-  echo -e ""
-  echo -e "This script was created to make installing Pterodactyl themes easier."
-  echo -e "Experiencing issues? Report them to the admin to get them fixed."
-  sleep 2
-
-  export DEBIAN_FRONTEND=noninteractive
-  export NEEDRESTART_MODE=a
-
-  if [ -f /etc/needrestart/needrestart.conf ]; then
-    sudo sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
-    sudo sed -i "s/\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
-  fi
-
-  sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get update -y >/dev/null 2>&1
-  sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get install -y jq curl wget unzip >/dev/null 2>&1
-  sleep 1
+header() {
+  clear
+  echo -e "${BC} ╔══════════════════════════════════════════════════════════╗${N}"
+  printf " ${BC}║${BW}%-58s${BC}║${N}\n" "$(get_title)"
+  printf " ${BC}║${B}%-58s${BC}║${N}\n" "      Merged Theme Installer • High Performance       "
+  echo -e "${BC} ╚══════════════════════════════════════════════════════════╝${N}"
+  echo -e " ${B}User:${N} $(whoami)  ${B}Host:${N} $(hostname)  ${B}Time:${N} $(date +'%H:%M')"
+  echo -e "${C} ──────────────────────────────────────────────────────────${N}"
 }
 
-# ==========================================
-# SUBMENU FUNCTIONS
-# ==========================================
+is_installed() {
+    local slug="$1"
+    if [[ -d "/var/www/pterodactyl/storage/extensions/$slug" ]]; then
+        return 0 # Installed
+    else
+        return 1 # Not Installed
+    fi
+}
 
-submenu_abyss() {
+print_info() { echo -e "\n  ${BG}${BW} INFO ${N} ${BW}$1${N}"; }
+print_warning() { echo -e "\n  ${BY}${BW} WARNING ${N} ${BW}$1${N}"; }
+print_error() { echo -e "\n  ${BR}${BW} ERROR ${N} ${BW}$1${N}"; }
+
+# ==========================================
+# 🗂️ SUBMENUS (For Script 2 Exceptions)
+# ==========================================
+submenu_nebula() {
   while true; do
-    show_abyss_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Purple Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Amber Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Emerald Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[d]${NC} ${WHITE}Crimson Red Colour Version${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
-    echo -n -e "\n${BOLD}Select an option (a-d, or 0 to back): ${NC}"
-    read choice
+    header
+    echo -e "${BM} ❖ NEBULA THEME VERSIONS ❖${N}\n"
+    echo -e "  ${BW}[ 1 ]${N} Nebula Theme V1"
+    echo -e "  ${BW}[ 2 ]${N} Nebula Theme V2"
+    echo -e "  ${BW}[ 3 ]${N} Nebula Theme V3"
+    echo -e "  ${BR}[ 0 ]${N} Back"
+    echo -e "${C} ──────────────────────────────────────────────────────────${N}"
+    read -p " 👉 Select option: " choice
     case "$choice" in
-      a|A) THEME_NAME="Abyss Purple"; THEME_URL="$URL_TY/abysspurple.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Abyss Amber"; THEME_URL="$URL_TY/amberabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      c|C) THEME_NAME="Abyss Emerald"; THEME_URL="$URL_TY/emeraldabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      d|D) THEME_NAME="Abyss Crimson"; THEME_URL="$URL_TY/crimsonabyss.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      1) SEL_NAME="Nebula V1"; SEL_TYPE="bp2"; SEL_PAYLOAD="${URL_EX}/nebula1.8.blueprint"; return 0;;
+      2) SEL_NAME="Nebula V2"; SEL_TYPE="bp2"; SEL_PAYLOAD="${URL_EX}/nebula2.0.blueprint"; return 0;;
+      3) SEL_NAME="Nebula V3"; SEL_TYPE="bp2"; SEL_PAYLOAD="${URL_EX}/nebula.blueprint"; return 0;;
       0) return 1;;
-      *) print_error "Invalid selection, please try again."; sleep 1;;
-    esac
-  done
-}
-
-submenu_catppuccin() {
-  while true; do
-    show_catppuccin_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Catppuccindactyl Theme V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Catppuccindactyl Theme V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
-    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
-    read choice
-    case "$choice" in
-      a|A) THEME_NAME="Catppuccindactyl V1"; THEME_URL="$URL_EX/catppuccindactyl1.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Catppuccindactyl V2"; THEME_URL="$URL_EX/catppuccindactyl2.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      0) return 1;;
-      *) print_error "Invalid selection, please try again."; sleep 1;;
+      *) echo -e "${R}Invalid selection.${N}"; sleep 1;;
     esac
   done
 }
 
 submenu_navy() {
   while true; do
-    show_navy_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Navy Seals Slice Theme V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Navy Seals Slice Theme V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
-    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
-    read choice
+    header
+    echo -e "${BM} ❖ NAVY SEALS VERSIONS ❖${N}\n"
+    echo -e "  ${BW}[ 1 ]${N} Navy Seals Slice Theme V1"
+    echo -e "  ${BW}[ 2 ]${N} Navy Seals Slice Theme V2"
+    echo -e "  ${BR}[ 0 ]${N} Back"
+    echo -e "${C} ──────────────────────────────────────────────────────────${N}"
+    read -p " 👉 Select option: " choice
     case "$choice" in
-      a|A) THEME_NAME="Navy Seals V1"; THEME_URL="$URL_EX/navyseals.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Navy Seals V2"; THEME_URL="$URL_EX/navyseals.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
+      1) SEL_NAME="Navy Seals V1"; SEL_TYPE="bp2"; SEL_PAYLOAD="${URL_EX}/navyseals.blueprint"; return 0;;
+      2) SEL_NAME="Navy Seals V2"; SEL_TYPE="bp2"; SEL_PAYLOAD="${URL_EX}/navyseals.blueprint"; return 0;;
       0) return 1;;
-      *) print_error "Invalid selection, please try again."; sleep 1;;
-    esac
-  done
-}
-
-submenu_nebula() {
-  while true; do
-    show_nebula_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Nebula Theme V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Nebula Theme V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[c]${NC} ${WHITE}Nebula Theme V3${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
-    echo -n -e "\n${BOLD}Select an option (a-c, or 0 to back): ${NC}"
-    read choice
-    case "$choice" in
-      a|A) THEME_NAME="Nebula V1"; THEME_URL="$URL_EX/nebula1.8.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Nebula V2"; THEME_URL="$URL_EX/nebula2.0.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      c|C) THEME_NAME="Nebula V3"; THEME_URL="$URL_EX/nebula.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      0) return 1;;
-      *) print_error "Invalid selection, please try again."; sleep 1;;
-    esac
-  done
-}
-
-submenu_xlpanel() {
-  while true; do
-    show_xlpanel_banner
-    echo -e " ${BRIGHT_WHITE}${BOLD}[a]${NC} ${WHITE}Xlpanel Theme V1${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[b]${NC} ${WHITE}Xlpanel Theme V2${NC}"
-    echo -e " ${BRIGHT_WHITE}${BOLD}[0]${NC} ${RED}Back${NC}"
-    echo -n -e "\n${BOLD}Select an option (a-b, or 0 to back): ${NC}"
-    read choice
-    case "$choice" in
-      a|A) THEME_NAME="Xlpanel V1"; THEME_URL="$URL_EX/xlpaneltheme.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      b|B) THEME_NAME="Xlpanel V2"; THEME_URL="$URL_EX/xlpaneltheme2.0.blueprint"; INSTALL_TYPE="blueprint"; return 0;;
-      0) return 1;;
-      *) print_error "Invalid selection, please try again."; sleep 1;;
+      *) echo -e "${R}Invalid selection.${N}"; sleep 1;;
     esac
   done
 }
 
 # ==========================================
-# MAIN MENU & DYNAMIC FETCHER
+# ⚙️ INSTALLATION ENGINES
 # ==========================================
-
-install_theme() {
-  print_info "Checking for new themes dynamically..."
-
-  API_URL="https://api.github.com/repos/sdgamer8263-sketch/Theme/git/trees/main?recursive=1"
-  
-  if [ -n "$GITHUB_TOKEN" ]; then
-      TREE_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "User-Agent: AutoInstaller" "$API_URL")
-  else
-      TREE_DATA=$(curl -s -H "User-Agent: AutoInstaller" "$API_URL")
-  fi
-
-  IGNORE_ALPHABETS=(
-      "abysspurple" "amberabyss" "crimsonabyss" "emeraldabyss"
-       "billing" "catppuccindactyl" "darkenate" "elysium"
-      "enigma" "euphoria" "euphoriatheme" "frostcore" "hyper" "hyperv"
-      "iceminecraft" "lemem" "lememtheme" "lu" "lutheme"
-      "navyseals" "navysealsslice" "nebula" "nightcore" "noobe" "nook"
-      "refresh" "refreshtheme" "stellar" "xlpanel" "xlpaneltheme"
-  )
-
-  is_ignored() {
-      local file="$1"
-      file="${file//$'\r'/}"
-      local base="${file%.*}"
-      local pure_alpha="${base//[^a-zA-Z]/}"
-      pure_alpha=$(echo "$pure_alpha" | tr '[:upper:]' '[:lower:]')
-      
-      for ignored in "${IGNORE_ALPHABETS[@]}"; do
-          if [[ "$ignored" == "$pure_alpha" ]]; then
-              return 0
-          fi
-      done
-      return 1
-  }
-
-  declare -a DYNAMIC_NAMES
-  declare -a DYNAMIC_URLS
-  declare -a DYNAMIC_TYPES
-  DYNAMIC_COUNT=0
-
-  if echo "$TREE_DATA" | grep -q '"tree":'; then
-      while IFS= read -r raw_path; do
-          [ -z "$raw_path" ] && continue
-          
-          file_path=$(echo "$raw_path" | tr -d '\r')
-          filename="${file_path##*/}"
-          
-          if ! is_ignored "$filename"; then
-              base_name="${filename%.*}"
-              base_name_clean="${base_name//%20/ }"
-              
-              first_char="${base_name_clean:0:1}"
-              rest_str="${base_name_clean:1}"
-              first_char_upper=$(echo "$first_char" | tr '[:lower:]' '[:upper:]')
-              
-              display_name="${first_char_upper}${rest_str}"
-              if [[ ! "${display_name,,}" == *"theme"* ]]; then
-                  display_name="${display_name} Theme"
-              fi
-              
-              DYNAMIC_NAMES[$DYNAMIC_COUNT]="$display_name"
-              DYNAMIC_URLS[$DYNAMIC_COUNT]="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/${file_path// /%20}"
-              
-              if [[ "$filename" == *.zip ]]; then
-                  DYNAMIC_TYPES[$DYNAMIC_COUNT]="standard"
-              elif [[ "$filename" == *.blueprint ]]; then
-                  DYNAMIC_TYPES[$DYNAMIC_COUNT]="blueprint"
-              fi
-              ((DYNAMIC_COUNT++))
-          fi
-      done < <(echo "$TREE_DATA" | jq -r '.tree[] | select((.path | startswith("Fg/") and endswith(".zip")) or (.path | startswith("Ex/") and endswith(".blueprint"))) | .path' | awk -F'/' '{print $NF "|" $0}' | sort -f | cut -d'|' -f2)
-  fi
-
-  while true; do
-    show_sdgamer_banner
-    echo " "
+install_blueprint() {
+    local NAME="$1"
+    local URL="$2"
+    local IDENTIFIER="$3"
     
-    # -----------------------------------------------------
-    # BEAUTIFUL V26.3 THEMES MENU BANNER
-    # -----------------------------------------------------
-    echo -e "${BOLD}${BRIGHT_MAGENTA}  ❖ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ❖${NC}"
-    echo -e "${BOLD}${BRIGHT_CYAN}                  🌟  T H E M E S   M E N U   (V 2 6 . 1)   🌟               ${NC}"
-    echo -e "${BOLD}${BRIGHT_MAGENTA}  ❖ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ❖${NC}"
-    echo " "
-
-    # -----------------------------------------------------
-    # 3-COLUMN GRID DISPLAY LOGIC
-    # -----------------------------------------------------
-    HARDCODED_THEMES=(
-        "ABYSS Theme" "Billing Theme" "Catppuccindactyl Theme" "Darkenate Theme"
-        "Elysium Theme" "Enigma Theme" "Euphoria Theme" "Frostcore Theme" "Hyper Theme V1"
-        "IceMinecraft Theme" "Lemem Theme" "Lu Theme" "Navy Seals Slice Theme" "Nebula Theme"
-        "Nightcore Theme" "Noobe Theme" "Nook Theme" "Refresh Theme" "Stellar Theme"
-        "Xlpanel Theme"
-    )
-
-    # Combine hardcoded and dynamic themes into one array
-    ALL_THEMES=("${HARDCODED_THEMES[@]}")
-    if [ $DYNAMIC_COUNT -gt 0 ]; then
-        for i in "${!DYNAMIC_NAMES[@]}"; do
-            ALL_THEMES+=("${DYNAMIC_NAMES[$i]}")
-        done
-    fi
-
-    COL_COUNT=0
-    for i in "${!ALL_THEMES[@]}"; do
-        INDEX=$((i+1))
-        
-        # Print each theme padded to 26 characters so the columns align nicely
-        printf " ${BRIGHT_WHITE}${BOLD}[%02d]${NC} ${WHITE}%-26s${NC}" "$INDEX" "${ALL_THEMES[$i]}"
-        
-        ((COL_COUNT++))
-        # Add a new line every 3 columns
-        if [[ $((COL_COUNT % 3)) -eq 0 ]]; then
-            echo ""
+    cd /var/www/pterodactyl || { echo -e "${R}Directory not found!${N}"; exit 1; }
+    echo -e "\n${G}📥 Downloading & Installing ${NAME}...${N}"
+    wget -q "$URL" -O "$IDENTIFIER.blueprint"
+    
+    if [[ -f "$IDENTIFIER.blueprint" ]]; then
+        # Standard blueprint fallback command integrated
+        if ! yes | blueprint -i "$IDENTIFIER.blueprint"; then
+            blueprint -install "$IDENTIFIER"
         fi
-    done
-    
-    # Check if we need to close out the last row with a new line
-    if [[ $((COL_COUNT % 3)) -ne 0 ]]; then
-        echo ""
-    fi
-    # -----------------------------------------------------
-
-    echo " "
-    echo -e " ${BRIGHT_WHITE}${BOLD}[00]${NC}  ${RED}Exit${NC}"
-    echo " "
-    TOTAL_OPTIONS=$((20 + DYNAMIC_COUNT))
-    echo -n -e "${BOLD}Enter your choice (0-$TOTAL_OPTIONS)${NC}${BOLD}: ${NC}"
-    read SELECT_THEME
-
-    if [[ "$SELECT_THEME" == "0" || "$SELECT_THEME" == "00" ]]; then
-        echo -e "\n${BOLD}Installation cancelled.${NC}"
-        return
-    elif [[ "$SELECT_THEME" -ge 1 && "$SELECT_THEME" -le 20 ]]; then
-        case "$SELECT_THEME" in
-          1|01) submenu_abyss && break ;;
-          2|02) THEME_NAME="Billing"; THEME_URL="$URL_FG/billing.zip"; INSTALL_TYPE="standard"; break ;;
-          3|03) submenu_catppuccin && break ;;
-          4|04) THEME_NAME="Darkenate"; THEME_URL="$URL_EX/darkenate.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-          5|05) THEME_NAME="Elysium"; THEME_URL="$URL_FG/elysium.zip"; INSTALL_TYPE="standard"; break ;;
-          6|06) THEME_NAME="Enigma"; THEME_URL="$URL_FG/enigma.zip"; INSTALL_TYPE="standard"; break ;;
-          7|07) THEME_NAME="Euphoria"; THEME_URL="$URL_EX/euphoriatheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-          8|08) THEME_NAME="Frostcore"; THEME_URL="$URL_FG/frostcore.zip"; INSTALL_TYPE="standard"; break ;;
-          9) THEME_NAME="Hyper V1"; THEME_URL="https://raw.githubusercontent.com/sdgamer8263-sketch/Theme/main/hyperv1.sh"; INSTALL_TYPE="script"; break ;;
-          10) THEME_NAME="IceMinecraft"; THEME_URL="$URL_FG/iceMinecraft.zip"; INSTALL_TYPE="standard"; break ;;
-          11) THEME_NAME="Lemem"; THEME_URL="$URL_EX/lememtheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-          12) THEME_NAME="Lu"; THEME_URL="$URL_EX/lutheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-          13) submenu_navy && break ;;
-          14) submenu_nebula && break ;;
-          15) THEME_NAME="Nightcore"; THEME_URL="$URL_FG/nightcore.zip"; INSTALL_TYPE="standard"; break ;;
-          16) THEME_NAME="Noobe"; THEME_URL="$URL_FG/noobe.zip"; INSTALL_TYPE="standard"; break ;;
-          17) THEME_NAME="Nook"; THEME_URL="$URL_FG/nook.zip"; INSTALL_TYPE="standard"; break ;;
-          18) THEME_NAME="Refresh"; THEME_URL="$URL_EX/refreshtheme.blueprint"; INSTALL_TYPE="blueprint"; break ;;
-          19) THEME_NAME="Stellar"; THEME_URL="$URL_FG/stellar.zip"; INSTALL_TYPE="standard"; break ;;
-          20) submenu_xlpanel && break ;;
-        esac
-    elif [[ "$SELECT_THEME" -ge 21 && "$SELECT_THEME" -le "$TOTAL_OPTIONS" ]]; then
-        INDEX=$((SELECT_THEME - 21))
-        THEME_NAME="${DYNAMIC_NAMES[$INDEX]}"
-        THEME_URL="${DYNAMIC_URLS[$INDEX]}"
-        INSTALL_TYPE="${DYNAMIC_TYPES[$INDEX]}"
-        break
+        rm -f "$IDENTIFIER.blueprint"
+        sudo chown -R www-data:www-data /var/www/pterodactyl
     else
-        print_error "Invalid selection, please try again."
-        sleep 1
+        echo -e "${R}❌ Download failed!${N}"
     fi
-  done
+}
 
-  echo " "
-  echo -n -e "${BOLD}You selected '$THEME_NAME'. Continue? (y/n): ${NC}"
-  read confirmation
-  if [[ "$confirmation" != [yY]* ]]; then echo -e "${BOLD}Installation cancelled.${NC}"; return; fi
-
-  # -- SCRIPT EXECUTION --
-  if [ "$INSTALL_TYPE" == "script" ]; then
-      print_info "Running installation script for $THEME_NAME..."
-      bash <(curl -sL "$THEME_URL")
-      return 0
-  fi
-    # -- INSTALLATION ENGINE --
-  set -e
-  TEMP_DIR=$(mktemp -d)
-  trap 'rm -rf -- "$TEMP_DIR"' EXIT
-  cd "$TEMP_DIR"
-
-  print_info "Starting installation for $THEME_NAME..."
-
-  print_info "[1/4] Downloading files..."
-  wget -q "$THEME_URL"
-  DOWNLOADED_FILE=$(ls -1 | head -n 1)
-
-  if [ "$INSTALL_TYPE" == "blueprint" ]; then
-    print_info "[2/4] Preparing Blueprint Framework..."
-    if [ ! -f "/var/www/pterodactyl/blueprint.sh" ]; then 
-        print_error "Blueprint Framework is not installed on your server!"
-        return 1
-    fi
+install_zip() {
+    local NAME="$1"
+    local URL="$2"
     
-    IDENTIFIER="${DOWNLOADED_FILE%.*}"
-    sudo mv "$DOWNLOADED_FILE" /var/www/pterodactyl/
-    
-    print_info "[3/4] Installing $THEME_NAME via Blueprint..."
-    cd /var/www/pterodactyl
-    
-    # ====================================================================
-    # 🔄 BLUEPRINT INSTALLATION WITH FALLBACK LOGIC
-    # ====================================================================
-    # ১. প্রথমে আপনার নতুন লজিক দিয়ে ইন্সটল করার চেষ্টা করবে
-    if sudo blueprint -install "$IDENTIFIER"; then
-        print_success "'$THEME_NAME' installed successfully using standard Blueprint command."
-    else
-        print_warning "Standard installation failed! Running fallback logic (from first script)..."
-        # ২. ফেইল করলে আপনার প্রথম স্ক্রিপ্টের লজিক (yes | blueprint -i) রান হবে
-        if yes | sudo blueprint -i "$DOWNLOADED_FILE"; then
-            print_success "'$THEME_NAME' installed successfully using fallback method."
-        else
-            print_error "Fallback installation also failed. Please check panel logs."
-            sudo rm -f "/var/www/pterodactyl/$DOWNLOADED_FILE"
-            return 1
-        fi
-    fi
-    # ====================================================================
-    
-    sudo chown -R www-data:www-data /var/www/pterodactyl
-    sudo rm -f "/var/www/pterodactyl/$DOWNLOADED_FILE"
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    print_info "Downloading files..."
+    wget -q "$URL" -O download.zip
+    unzip -oq download.zip || true
 
-  elif [ "$INSTALL_TYPE" == "standard" ]; then
-    print_info "[2/4] Extracting files..."
-    unzip -oq "$DOWNLOADED_FILE" || true
-
-    print_info "[3/4] Copying files to Pterodactyl..."
-    
-    # ====================================================================
-    # SMART COPY LOGIC (For dynamically added and standard zip themes)
-    # ====================================================================
-    
-    # ১. প্রথমে খুঁজবে আনজিপ করা ফাইলের ভেতর 'pterodactyl' নামের কোনো ফোল্ডার আছে কিনা
+    print_info "Extracting and Copying..."
     PTERO_DIR=$(find . -maxdepth 3 -type d -iname "pterodactyl" | head -n 1)
-
     if [ -n "$PTERO_DIR" ]; then
         sudo cp -r "$PTERO_DIR"/* /var/www/pterodactyl/
     else
-        # ২. যদি 'pterodactyl' ফোল্ডার না থাকে, তবে সরাসরি resources/public ফোল্ডার খুঁজবে
         if [ -d "./resources" ] || [ -d "./public" ]; then
              sudo cp -r ./* /var/www/pterodactyl/
         else
-            # ৩. অনেক সময় জিপের ভেতর একটাই মেইন ফোল্ডার থাকে (যেমন Ultra_Cheese-main)
-            SINGLE_DIR=$(find . -mindepth 1 -maxdepth 1 -type d | grep -v "$DOWNLOADED_FILE" | head -n 1)
-            
+            SINGLE_DIR=$(find . -mindepth 1 -maxdepth 1 -type d | grep -v "download.zip" | head -n 1)
             if [ -n "$SINGLE_DIR" ] && { [ -d "$SINGLE_DIR/resources" ] || [ -d "$SINGLE_DIR/public" ]; }; then
                 sudo cp -r "$SINGLE_DIR"/* /var/www/pterodactyl/
             else
-                # ৪. সর্বশেষ উপায়, সরাসরি কারেন্ট ডিরেক্টরি থেকে কপি করবে (zip ফাইলটি বাদে)
-                rm -f "$DOWNLOADED_FILE"
+                rm -f download.zip
                 sudo cp -r ./* /var/www/pterodactyl/ 2>/dev/null || true
             fi
         fi
     fi
-    # ====================================================================
 
     cd /var/www/pterodactyl
-
-    print_info "Checking Node.js version..."
+    print_info "Verifying Node.js version..."
     CURRENT_NODE_VER=$(node -v 2>/dev/null | cut -d'.' -f1 | sed 's/v//')
     if [[ "$CURRENT_NODE_VER" != "22" ]]; then
       print_warning "Installing Node.js v22..."
@@ -549,34 +225,152 @@ install_theme() {
     yarn add cross-env react-feather > /dev/null 2>&1
     yarn install > /dev/null 2>&1
 
-    if [[ "$THEME_NAME" == *"Billing"* ]]; then
+    if [[ "$NAME" == *"Billing"* ]]; then
       print_info "Running Billing installation..."
       php artisan billing:install stable
     fi
 
-    print_info "[4/4] Building panel assets..."
-    print_warning "Build process is running. DO NOT close the terminal until it finishes!"
+    print_info "Building panel assets (DO NOT CLOSE TERMINAL)..."
     export NODE_OPTIONS=--openssl-legacy-provider
     php artisan migrate --force
     yarn build:production
     php artisan view:clear
     php artisan optimize:clear
-    
+    sudo chown -R www-data:www-data /var/www/pterodactyl
 
-    print_success "'$THEME_NAME' installed successfully."
-  fi
-
-  echo " "
-  log_success "[=================================================]"
-  log_success "[   ⚜️    INSTALLATION COMPLETED SUCCESSFULLY   ⚜️    ]"
-  log_success "[=================================================]"
-  echo " "
-  sleep 3
-  return 0
+    rm -rf "$TEMP_DIR"
+    echo -e "\n${G}✅ '$NAME' installed successfully.${N}"
 }
 
 # ==========================================
-# START EXECUTION
+# 📋 MAIN MENU LOOP
 # ==========================================
-start_script
-install_theme
+show_menu() {
+  header
+  echo -e "${BW} SELECT A THEME UI:${N}\n"
+  
+  local count=0
+  for i in "${!THEMES[@]}"; do
+      num=$((i+1))
+      IFS='|' read -r t_name t_type t_payload <<< "${THEMES[$i]}"
+      
+      # Determine Installation Status
+      if [[ "$t_type" == *"bp"* ]]; then
+          if [[ "$t_type" == "bp1" ]]; then
+              slug="${t_payload%.blueprint}"
+          else
+              slug=$(basename "$t_payload" .blueprint)
+          fi
+          if is_installed "$slug"; then
+              status="${BG}●${N}" # Green dot
+          else
+              status="${R}○${N}" # Red circle
+          fi
+      else
+          status="${C}⚡${N}" # Action indicator for scripts/zips
+      fi
+      
+      printf "  ${BG}%02d${N} %-23s %b   " "$num" "$t_name" "$status"
+      
+      ((count++))
+      if (( count % 2 == 0 )); then echo ""; fi
+  done
+
+  if (( count % 2 != 0 )); then echo ""; fi
+  echo -e "\n\n  ${BR} 0 ${N} Exit"
+  echo -e "${C} ──────────────────────────────────────────────────────────${N}"
+}
+
+while true; do
+  show_menu
+  read -p " 👉 Enter choice: " opt
+
+  if [[ "$opt" == "0" ]]; then
+      echo -e "\n${M} 👋 Goodbye!${N}"
+      exit
+  fi
+
+  index=$((opt-1))
+  if [[ -z "${THEMES[$index]}" ]]; then
+      echo -e "\n${R} ❌ Invalid Option${N}"
+      sleep 1
+      continue
+  fi
+
+  IFS='|' read -r SEL_NAME SEL_TYPE SEL_PAYLOAD <<< "${THEMES[$index]}"
+
+  # Intercept Submenus
+  if [[ "$SEL_TYPE" == "submenu" ]]; then
+      if [[ "$SEL_PAYLOAD" == "nebula" ]]; then
+          submenu_nebula || continue
+      elif [[ "$SEL_PAYLOAD" == "navy" ]]; then
+          submenu_navy || continue
+      fi
+  fi
+
+  # Determine Slug & URL for action
+  if [[ "$SEL_TYPE" == "bp1" ]]; then
+      SLUG="${SEL_PAYLOAD%.blueprint}"
+      THEME_URL="${URL_NOBITA}/${SEL_PAYLOAD}"
+  elif [[ "$SEL_TYPE" == "bp2" ]]; then
+      SLUG=$(basename "$SEL_PAYLOAD" .blueprint)
+      THEME_URL="$SEL_PAYLOAD"
+  else
+      SLUG=""
+      THEME_URL="$SEL_PAYLOAD"
+  fi
+
+  clear
+  header
+  
+  # Status Text
+  if [[ -n "$SLUG" ]]; then
+      if is_installed "$SLUG"; then
+          cur_status="${BG}ALREADY INSTALLED${N}"
+      else
+          cur_status="${R}NOT INSTALLED${N}"
+      fi
+  else
+      cur_status="${C}READY TO DEPLOY${N}"
+  fi
+
+  echo -e " ${BW}SELECTED UI:${N} ${BC}$SEL_NAME${N}"
+  echo -e " ${BW}STATUS:${N}      $cur_status"
+  echo -e "${C} ──────────────────────────────────────────────────────────${N}"
+  
+  echo -e "  ${BG}[ 1 ]${N} Install"
+  if [[ "$SEL_TYPE" == *"bp"* ]]; then
+      echo -e "  ${BR}[ 2 ]${N} Uninstall"
+  fi
+  echo -e "  ${BY}[ 0 ]${N} Back to Menu"
+  echo -e "${C} ──────────────────────────────────────────────────────────${N}"
+
+  read -p " 👉 Action: " action
+
+  case $action in
+      1)
+          if [[ "$SEL_TYPE" == *"bp"* ]]; then
+              install_blueprint "$SEL_NAME" "$THEME_URL" "$SLUG"
+          elif [[ "$SEL_TYPE" == "zip" ]]; then
+              install_zip "$SEL_NAME" "$THEME_URL"
+          elif [[ "$SEL_TYPE" == "script" ]]; then
+              echo -e "\n${G}🚀 Running Installation Script...${N}"
+              bash <(curl -sSL "$THEME_URL")
+          fi
+          ;;
+      2)
+          if [[ "$SEL_TYPE" == *"bp"* ]]; then
+              echo -e "\n${R}🗑️ Removing $SEL_NAME...${N}"
+              cd /var/www/pterodactyl
+              yes | blueprint -r "$SLUG"
+          else
+              echo -e "${R}Invalid Choice (Uninstall not supported for this type)${N}"
+          fi
+          ;;
+      0) continue ;;
+      *) echo -e "${R}Invalid Choice${N}" ;;
+  esac
+
+  echo
+  read -p " ↩️ Press [Enter] to return..."
+done
