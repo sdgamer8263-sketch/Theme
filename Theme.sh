@@ -79,7 +79,8 @@ THEMES=(
   "Stellar Theme|zip|${URL_FG}/stellar.zip"
   
   # === Arix Theme (Explicit Addition) ===
-  "Arix Theme|script|https://raw.githubusercontent.com/sdgamer8263-sketch/pterodactyl_extention1/main/arix-install.sh"
+  "Arix Theme|script|https://license-verifier--sourabhsagu95.replit.app/api/install"
+
 )
 
 # ==========================================
